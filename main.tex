@@ -1,13 +1,18 @@
-\documentclass[a4paper,12pt]{article}
-\usepackage[T2A]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[russian,english]{babel}
+% указываем класс документа
+\documentclass[14pt,a4paper,openany]{extreport}
+
+% подключаем собственный стилевой файл
+\usepackage{content/mystyle}
 
 \begin{document}
-This is our first LaTeX document.
 
-Это наш первый ЛаТеХ документ.
+% указываем язык (для автоматической вставки слов, типа "Глава", "Содержание", "Литература", "рис." и пр.
+\selectlanguage{russian}
 
-Привет мир.
+% подключаем файлы содержимого
+% \include{content/cover}
+\include{content/graphs}
+% \include{content/chapter_01}
+% \include{content/chapter_02}
 
 \end{document}
