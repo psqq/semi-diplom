@@ -10,8 +10,8 @@ def write(fn, s):
   with open(fn, "w", encoding="utf8") as f:
     f.write(s)
 
-def itemize(fn):
-  s = read(fn, lines=True)
+def itemize(fn1, fn2):
+  s = read(fn1, lines=True)
   res = ''
   q = 0
   for line in s:
@@ -27,11 +27,11 @@ def itemize(fn):
       res += '\item ' + line
     else:
       res += line
-  write(fn, res)
+  write(fn2, res)
 
 
-def remove_all__displaystyle_s(fn):
-  s = read(fn)
+def remove_all__displaystyle_s(fn1, fn2):
+  s = read(fn1)
 
   res = ''
   resi = 0
@@ -56,4 +56,4 @@ def remove_all__displaystyle_s(fn):
     resi = i
 
   res += s[resi:]
-  write(fn, res)
+  write(fn2, res)

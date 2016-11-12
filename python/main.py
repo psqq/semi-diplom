@@ -1,12 +1,11 @@
 
 import utils
 
-fn = r"A:\sandbox\_projects\diploma\content\graphs.tex"
+fn1 = "input.txt"
+fn2 = "output.txt"
 
-utils.itemize(fn)
+args = [fn1, fn2]
 
-# utils.remove_all__displaystyle_s(fn)
+# utils.itemize(*args)
 
-
-
-
+utils.remove_all__displaystyle_s(*args)
