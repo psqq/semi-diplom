@@ -6,4 +6,6 @@ __pycache__
 .idea
 *.fdb_latexmk
 *.fls
-
+*.lof
+*.lot
+*.toc
