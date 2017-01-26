@@ -1,6 +1,9 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include <bits/stdc++.h>
+using namespace std;
+
 class digraph {
   int n = 0;
   vector<vector<int>> adj_list;

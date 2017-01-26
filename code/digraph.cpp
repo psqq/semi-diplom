@@ -1,4 +1,6 @@
+#include <bits/stdc++.h>
 #include "digraph.h"
+using namespace std;
 
 void digraph::resize(int new_n) {
   n = new_n;
@@ -7,6 +9,7 @@ void digraph::resize(int new_n) {
     v.clear();
   }
 }
+
 void digraph::load(string file_name) {
   ifstream fin(file_name);
   string line;
@@ -33,15 +36,19 @@ void digraph::load(string file_name) {
     }
   }
 }
+
 digraph::digraph(string fn) {
   load(fn);
 }
+
 digraph::digraph(int an) : n(an) {
   adj_list.resize(n);
 }
+
 int digraph::count_vertices() {
   return n;
 }
+
 bool digraph::is_edge(int a, int b) {
   assert(a < n);
   for (auto v : adj_list[a]) {
@@ -49,11 +56,13 @@ bool digraph::is_edge(int a, int b) {
   }
   return false;
 }
+
 void digraph::add_edge(int a, int b) {
   assert(a < n && b < n);
   if (is_edge(a, b)) return;
   adj_list[a].push_back(b);
 }
+
 vector<pair<int, int>> digraph::edges() {
   vector<pair<int, int>> es;
   for (int v = 0; v < n; v++) {
@@ -63,6 +72,7 @@ vector<pair<int, int>> digraph::edges() {
   }
   return es;
 }
+
 void digraph::print() {
   cout << "Count of vertices: " << n << '\n';
   cout << "Degree of vertices:\n";
@@ -76,6 +86,7 @@ void digraph::print() {
     }
   }
 }
+
 int digraph::degree(int v) {
   return adj_list[v].size();
 }
