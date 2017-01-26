@@ -90,3 +90,7 @@ void digraph::print() {
 int digraph::degree(int v) {
   return adj_list[v].size();
 }
+
+vector<int> digraph::output_vertices(int v) {
+  return adj_list[v];
+}

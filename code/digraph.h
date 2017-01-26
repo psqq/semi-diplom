@@ -18,6 +18,7 @@ public:
   vector<pair<int, int>> edges();
   void print();
   int degree(int v);
+  vector<int> output_vertices(int k);
 };
 
 #endif /* end of include guard: GRAPH_H */
