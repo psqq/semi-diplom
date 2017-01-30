@@ -2,6 +2,7 @@
 TEX_FILES=*.tex content/*.tex
 LISTING_TARGETS=digraph.h.tex digraph.cpp.tex graph_iso.cpp.tex
 TMP_FILES=*.log *.out *.aux content/*.aux
+IMAGES=dot_graphs/ex1.dot.png
 
 all: main.pdf
 
@@ -17,5 +18,8 @@ digraph.cpp.tex: code/digraph.cpp
 graph_iso.cpp.tex: code/graph_iso.cpp
 	./tolisting.sh code/graph_iso.cpp content/code/graph_iso.cpp.tex
 
-main.pdf: $(TEX_FILES) $(LISTING_TARGETS)
+dot_graphs/ex1.dot.png: dot_graphs/ex1.dot
+	dot -Tpng dot_graphs/ex1.dot -o dot_graphs/ex1.dot.png
+
+main.pdf: $(TEX_FILES) $(LISTING_TARGETS) $(IMAGES)
 	pdflatex main.tex

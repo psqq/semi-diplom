@@ -32,12 +32,12 @@
     31	  // подмножеству g2 {f[0], f[1], ..., f[g1_k - 1], v}
     32	  for (int u = 0; u < g1_k; u++) {
     33	    if (g1.is_edge(u, g1_k) && !g2.is_edge(f[u], v)) {
-    34	      cout << 1 << ": " << u << " " << g1_k << " "
-    35	           << f[u] << " " << v << endl;
+    34	      // cout << 1 << ": " << u << " " << g1_k << " "
+    35	      //      << f[u] << " " << v << endl;
     36	      return false;
     37	    }
     38	    if (g1.is_edge(g1_k, u) && !g2.is_edge(v, f[u])) {
-    39	      cout << 2 << endl;
+    39	      // cout << 2 << endl;
     40	      return false;
     41	    }
     42	  }
@@ -45,10 +45,10 @@
     44	}
     45	
     46	void DigraphIso::go() {
-    47	  cout << "go begin\n";
-    48	  cout << "g2_s: ";
-    49	  for (int i : g2_s) cout << i << " ";
-    50	  cout << endl;
+    47	  // cout << "go begin\n";
+    48	  // cout << "g2_s: ";
+    49	  // for (int i : g2_s) cout << i << " ";
+    50	  // cout << endl;
     51	  if (g2_s.size() == n) {
     52	    ans = 1;
     53	    return;
@@ -60,19 +60,19 @@
     59	    g2_s.begin(), g2_s.end(),
     60	    inserter(t, t.end())
     61	  );
-    62	  cout << "t: ";
-    63	  for (int i : t) cout << i << " ";
-    64	  cout << endl;
+    62	  // cout << "t: ";
+    63	  // for (int i : t) cout << i << " ";
+    64	  // cout << endl;
     65	  for (int v : t) {
     66	    if (ans > 0) return;
     67	    if (match(v)) {
-    68	      cout << g1_k << " match " << v << endl;
+    68	      // cout << g1_k << " match " << v << endl;
     69	      f[g1_k] = v;
     70	      g2_s.insert(v);
     71	      go();
     72	      g2_s.erase(v);
     73	    } else {
-    74	      cout << g1_k << " don't match " << v << endl;
+    74	      // cout << g1_k << " don't match " << v << endl;
     75	    }
     76	  }
     77	  g1_k -= 1;
@@ -96,20 +96,24 @@
     95	  return f;
     96	}
     97	
-    98	int main() {
-    99	  digraph g1("1.digraph"), g2("2.digraph");
-   100	  cout << "# 1.digraph:\n";
-   101	  g1.print();
-   102	  cout << "# 2.digraph:\n";
-   103	  g2.print();
-   104	  DigraphIso iso(g1, g2);
-   105	  cout << "Is isomorph?: " << iso.is_iso() << endl;
-   106	  if (iso.is_iso()) {
-   107	    vector<int> f = iso.biection();
-   108	    cout << "biection:\n";
-   109	    for (int i=0; i<g1.count_vertices(); i++) {
-   110	      cout << '\t' << i << " -> " << f[i] << '\n';
-   111	    }
-   112	  }
-   113	}
+    98	int main(int argc, char **argv) {
+    99	  if (argc < 3) {
+   100	    cout << "few arguments" << endl;
+   101	    return 1;
+   102	  }
+   103	  digraph g1(argv[1]), g2(argv[2]);
+   104	  cout << "# 1.digraph:\n";
+   105	  g1.print();
+   106	  cout << "# 2.digraph:\n";
+   107	  g2.print();
+   108	  DigraphIso iso(g1, g2);
+   109	  cout << "Is isomorph?: " << iso.is_iso() << endl;
+   110	  if (iso.is_iso()) {
+   111	    vector<int> f = iso.biection();
+   112	    cout << "biection:\n";
+   113	    for (int i=0; i<g1.count_vertices(); i++) {
+   114	      cout << '\t' << i << " -> " << f[i] << '\n';
+   115	    }
+   116	  }
+   117	}
 \end{verbatim}
