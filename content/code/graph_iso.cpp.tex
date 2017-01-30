@@ -1,0 +1,115 @@
+\begin{verbatim}
+     1	#include <bits/stdc++.h>
+     2	#include "digraph.h"
+     3	using namespace std;
+     4	
+     5	class DigraphIso {
+     6	  digraph g1, g2;
+     7	  set<int> vertices;
+     8	  int n = -1; // количество вершин в графах g1, g2
+     9	  int g1_k = -1; // подмножество вершин g1 {0, 1, ..., g1_k}
+    10	  set<int> g2_s; // Подмножество вершин графа g2, которое
+    11	  // соотвествует множеству вершин грфафа g1 {0, 1, ..., g1_k}
+    12	  vector<int> f; // биекция: i (вершина g1) -> f[i] (вершина g2)
+    13	  int ans = -1;
+    14	  bool match(int v);
+    15	  void go();
+    16	public:
+    17	  DigraphIso(digraph ag1, digraph ag2);
+    18	  bool is_iso();
+    19	  vector<int> biection();
+    20	};
+    21	
+    22	DigraphIso::DigraphIso(digraph ag1, digraph ag2)
+    23	  : g1(ag1), g2(ag2) {}
+    24	
+    25	bool DigraphIso::match(int v) {
+    26	  // Подмножество g1 {0, 1, ..., g1_k - 1} изоморфно
+    27	  // подножеству графа g2 g2_s,
+    28	  // которое равно {f[0], f[1], ..., f[g1_k - 1]}
+    29	  // На данном шаге нужно проверить может ли подмножество g1
+    30	  // {0, 1, ..., g1_k - 1, g1_k} быть изоморфно
+    31	  // подмножеству g2 {f[0], f[1], ..., f[g1_k - 1], v}
+    32	  for (int u = 0; u < g1_k; u++) {
+    33	    if (g1.is_edge(u, g1_k) && !g2.is_edge(f[u], v)) {
+    34	      cout << 1 << ": " << u << " " << g1_k << " "
+    35	           << f[u] << " " << v << endl;
+    36	      return false;
+    37	    }
+    38	    if (g1.is_edge(g1_k, u) && !g2.is_edge(v, f[u])) {
+    39	      cout << 2 << endl;
+    40	      return false;
+    41	    }
+    42	  }
+    43	  return true;
+    44	}
+    45	
+    46	void DigraphIso::go() {
+    47	  cout << "go begin\n";
+    48	  cout << "g2_s: ";
+    49	  for (int i : g2_s) cout << i << " ";
+    50	  cout << endl;
+    51	  if (g2_s.size() == n) {
+    52	    ans = 1;
+    53	    return;
+    54	  }
+    55	  g1_k += 1;
+    56	  set<int> t;
+    57	  set_difference(
+    58	    vertices.begin(), vertices.end(),
+    59	    g2_s.begin(), g2_s.end(),
+    60	    inserter(t, t.end())
+    61	  );
+    62	  cout << "t: ";
+    63	  for (int i : t) cout << i << " ";
+    64	  cout << endl;
+    65	  for (int v : t) {
+    66	    if (ans > 0) return;
+    67	    if (match(v)) {
+    68	      cout << g1_k << " match " << v << endl;
+    69	      f[g1_k] = v;
+    70	      g2_s.insert(v);
+    71	      go();
+    72	      g2_s.erase(v);
+    73	    } else {
+    74	      cout << g1_k << " don't match " << v << endl;
+    75	    }
+    76	  }
+    77	  g1_k -= 1;
+    78	}
+    79	
+    80	bool DigraphIso::is_iso() {
+    81	  if (ans >= 0) return ans;
+    82	  if (g1.count_vertices() != g2.count_vertices()) {
+    83	    return false;
+    84	  }
+    85	  n = g1.count_vertices();
+    86	  f.resize(n);
+    87	  for (int i=0; i<n; i++) vertices.insert(i);
+    88	  go();
+    89	  cout << "ans " << ans << endl;
+    90	  if (ans < 0) ans = 0;
+    91	  return ans;
+    92	}
+    93	
+    94	vector<int> DigraphIso::biection() {
+    95	  return f;
+    96	}
+    97	
+    98	int main() {
+    99	  digraph g1("1.digraph"), g2("2.digraph");
+   100	  cout << "# 1.digraph:\n";
+   101	  g1.print();
+   102	  cout << "# 2.digraph:\n";
+   103	  g2.print();
+   104	  DigraphIso iso(g1, g2);
+   105	  cout << "Is isomorph?: " << iso.is_iso() << endl;
+   106	  if (iso.is_iso()) {
+   107	    vector<int> f = iso.biection();
+   108	    cout << "biection:\n";
+   109	    for (int i=0; i<g1.count_vertices(); i++) {
+   110	      cout << '\t' << i << " -> " << f[i] << '\n';
+   111	    }
+   112	  }
+   113	}
+\end{verbatim}

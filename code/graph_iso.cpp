@@ -31,12 +31,12 @@ bool DigraphIso::match(int v) {
   // подмножеству g2 {f[0], f[1], ..., f[g1_k - 1], v}
   for (int u = 0; u < g1_k; u++) {
     if (g1.is_edge(u, g1_k) && !g2.is_edge(f[u], v)) {
-      cout << 1 << ": " << u << " " << g1_k << " "
-           << f[u] << " " << v << endl;
+      // cout << 1 << ": " << u << " " << g1_k << " "
+      //      << f[u] << " " << v << endl;
       return false;
     }
     if (g1.is_edge(g1_k, u) && !g2.is_edge(v, f[u])) {
-      cout << 2 << endl;
+      // cout << 2 << endl;
       return false;
     }
   }
@@ -44,10 +44,10 @@ bool DigraphIso::match(int v) {
 }
 
 void DigraphIso::go() {
-  cout << "go begin\n";
-  cout << "g2_s: ";
-  for (int i : g2_s) cout << i << " ";
-  cout << endl;
+  // cout << "go begin\n";
+  // cout << "g2_s: ";
+  // for (int i : g2_s) cout << i << " ";
+  // cout << endl;
   if (g2_s.size() == n) {
     ans = 1;
     return;
@@ -59,19 +59,19 @@ void DigraphIso::go() {
     g2_s.begin(), g2_s.end(),
     inserter(t, t.end())
   );
-  cout << "t: ";
-  for (int i : t) cout << i << " ";
-  cout << endl;
+  // cout << "t: ";
+  // for (int i : t) cout << i << " ";
+  // cout << endl;
   for (int v : t) {
     if (ans > 0) return;
     if (match(v)) {
-      cout << g1_k << " match " << v << endl;
+      // cout << g1_k << " match " << v << endl;
       f[g1_k] = v;
       g2_s.insert(v);
       go();
       g2_s.erase(v);
     } else {
-      cout << g1_k << " don't match " << v << endl;
+      // cout << g1_k << " don't match " << v << endl;
     }
   }
   g1_k -= 1;
@@ -95,8 +95,12 @@ vector<int> DigraphIso::biection() {
   return f;
 }
 
-int main() {
-  digraph g1("1.digraph"), g2("2.digraph");
+int main(int argc, char **argv) {
+  if (argc < 3) {
+    cout << "few arguments" << endl;
+    return 1;
+  }
+  digraph g1(argv[1]), g2(argv[2]);
   cout << "# 1.digraph:\n";
   g1.print();
   cout << "# 2.digraph:\n";
