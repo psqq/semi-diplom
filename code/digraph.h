@@ -5,20 +5,40 @@
 using namespace std;
 
 class digraph {
-  int n = 0;
-  vector<vector<int>> adj_list;
+  int n = 0; // количество вершин
+  int root = 0; // корневая вершина
+  vector<vector<int>> adj_list; // списки смежных вершин
+  vector<vector<int>> adj_mat; // матрица смежности
+  // Информация о графе полученная с помощью bfs алгоритма
+  bool is_dists_finded = false;
+  // расстояние от одной вершины до другой
+  // без учета направлений ребер
+  vector<vector<int>> dist;
+  vector<vector<int>> input_vers;
+  bool is_leaves_finded = false;
+  vector<int> leaves;
+  // Инвариант 3
+  vector<string> inv3;
+  string inv3_full;
+private:
   void resize(int new_n);
-  void load(string file_name);
+  void add_edge(int a, int b);
+  void load(istream &is);
+  void find_dists_from(int v);
 public:
-  digraph(string fn);
-  digraph(int an);
+  digraph(istream &is);
+  digraph(string s);
+  digraph(int an = 0);
+  void load_from_file(string file_name);
   int count_vertices();
   bool is_edge(int a, int b);
-  void add_edge(int a, int b);
   vector<pair<int, int>> edges();
   void print();
   int degree(int v);
   vector<int> output_vertices(int k);
+  void find_dists();
+  void find_leaves();
+  void find_inv3();
 };
 
 #endif /* end of include guard: GRAPH_H */

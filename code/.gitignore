@@ -1,1 +1,3 @@
 graph_iso
+*.o
+tmp.txt

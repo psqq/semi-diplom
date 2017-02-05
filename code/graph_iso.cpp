@@ -100,6 +100,13 @@ int main(int argc, char **argv) {
     cout << "few arguments" << endl;
     return 1;
   }
+  if (argc > 1 && string(argv[1]) == "-i") {
+    digraph g;
+    g.load_from_file(argv[2]);
+    g.find_inv3();
+    g.print();
+    return 0;
+  }
   digraph g1(argv[1]), g2(argv[2]);
   cout << "# 1.digraph:\n";
   g1.print();
