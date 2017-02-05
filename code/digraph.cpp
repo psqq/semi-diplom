@@ -22,6 +22,10 @@ void digraph::resize(int new_n) {
 
 void digraph::load_from_file(string file_name) {
   ifstream fin(file_name);
+  if (!fin.good()) {
+    cout << "File '" << file_name << "' not found!" << endl;
+    exit(1);
+  }
   load(fin);
 }
 
@@ -91,21 +95,33 @@ void digraph::print() {
       cout << '\t' << v << " -> " << u << '\n';
     }
   }
-  cout << "Dists:\n";
-  for (int v = 0; v < n; v++) {
-    cout << '\t';
-    for (int u = 0; u < n; u++) {
-      cout << dist[v][u];
-      if (u < n - 1)
-        cout << " ";
+  if (is_leaves_finded) {
+    cout << "Leaves: ";
+    for (int i=0; i<leaves.size();i++) {
+      cout << leaves[i];
+      if (i < leaves.size() -1) cout << ", ";
     }
-    cout << '\n';
+    cout << endl;
   }
-  cout << "Inv3:\n";
-  for (int v = 0; v < n; v++) {
-    cout << '\t' << v << ": '" << inv3[v] << "'\n";
+  if (is_dists_finded) {
+    cout << "Dists:\n";
+    for (int v = 0; v < n; v++) {
+      cout << '\t';
+      for (int u = 0; u < n; u++) {
+        cout << dist[v][u];
+        if (u < n - 1)
+          cout << " ";
+      }
+      cout << '\n';
+    }
   }
-  cout << "full: '" << inv3_full << "'\n";
+  if (is_inv3_finded) {
+    cout << "Inv3:\n";
+    for (int v = 0; v < n; v++) {
+      cout << '\t' << v << ": '" << inv3[v] << "'\n";
+    }
+    cout << "full: '" << inv3_full << "'\n";
+  }
 }
 
 int digraph::degree(int v) { return adj_list[v].size(); }
@@ -179,4 +195,5 @@ void digraph::find_inv3() {
     if (v < n - 1)
       inv3_full += "; ";
   }
+  is_inv3_finded = true;
 }

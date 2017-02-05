@@ -107,7 +107,9 @@ int main(int argc, char **argv) {
     g.print();
     return 0;
   }
-  digraph g1(argv[1]), g2(argv[2]);
+  digraph g1, g2;
+  g1.load_from_file(argv[1]);
+  g2.load_from_file(argv[2]);
   cout << "# 1.digraph:\n";
   g1.print();
   cout << "# 2.digraph:\n";

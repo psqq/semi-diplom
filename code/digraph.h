@@ -9,15 +9,16 @@ class digraph {
   int root = 0; // корневая вершина
   vector<vector<int>> adj_list; // списки смежных вершин
   vector<vector<int>> adj_mat; // матрица смежности
+  vector<vector<int>> input_vers;
   // Информация о графе полученная с помощью bfs алгоритма
-  bool is_dists_finded = false;
   // расстояние от одной вершины до другой
   // без учета направлений ребер
+  bool is_dists_finded = false;
   vector<vector<int>> dist;
-  vector<vector<int>> input_vers;
   bool is_leaves_finded = false;
   vector<int> leaves;
   // Инвариант 3
+  bool is_inv3_finded = false;
   vector<string> inv3;
   string inv3_full;
 private:
