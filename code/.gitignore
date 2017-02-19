@@ -1,5 +1,4 @@
 graph_iso
 *.o
-tmp.txt
-output-iso.txt
-output-info.txt
+main
+semi

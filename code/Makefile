@@ -1,23 +1,31 @@
 
-FLAGS := -g --std=c++14
+BIN = semi
+SRCS = main.cpp digraph.cpp
+OBJS = $(subst .cpp,.o,$(SRCS))
+CFLAGS = --std=c++14
 
-gi: graph_iso
+all: depend $(BIN)
 
-iso: gi
-	./graph_iso 1.dig 2.dig > output-iso.txt
+depend: .depend
 
-info:
-	./graph_iso -i 1.dig > output-info.txt
+.depend: $(SRCS)
+	rm -f ./.depend
+	g++ $(CFLAGS) -MM $^ > ./.depend;
 
-clear_screen:
-	clear
-	clear
+include .depend
 
-graph_iso: clear_screen digraph.o graph_iso.o
-	g++ $(FLAGS) -o graph_iso graph_iso.o digraph.o
+main.o:
+	g++ $(CFLAGS) -c main.cpp
 
-graph_iso.o: graph_iso.cpp digraph.h
-	g++ $(FLAGS) -c graph_iso.cpp
+digraph.o:
+	g++ $(CFLAGS) -c digraph.cpp
 
-digraph.o: digraph.cpp digraph.h
-	g++ $(FLAGS) -c digraph.cpp
+$(BIN): main.o digraph.o
+	g++ -o $(BIN) main.o digraph.o
+
+tests/semi: $(BIN)
+	rm tests/$(BIN) || true
+	cp $(BIN) tests/$(BIN)
+
+test: tests/semi
+	cd tests; bats tests.bats

@@ -29,6 +29,8 @@ zip: content.zip
 content.zip: content/graphs.tex content/semigroups.tex
 	zip content content/graphs.tex content/semigroups.tex
 
+spell: grammar
+
 grammar:
 	hunspell -d ru_RU content/graphs.tex
 	hunspell -d ru_RU content/semigroups.tex

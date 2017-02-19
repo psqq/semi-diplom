@@ -101,19 +101,28 @@
    100	    cout << "few arguments" << endl;
    101	    return 1;
    102	  }
-   103	  digraph g1(argv[1]), g2(argv[2]);
-   104	  cout << "# 1.digraph:\n";
-   105	  g1.print();
-   106	  cout << "# 2.digraph:\n";
-   107	  g2.print();
-   108	  DigraphIso iso(g1, g2);
-   109	  cout << "Is isomorph?: " << iso.is_iso() << endl;
-   110	  if (iso.is_iso()) {
-   111	    vector<int> f = iso.biection();
-   112	    cout << "biection:\n";
-   113	    for (int i=0; i<g1.count_vertices(); i++) {
-   114	      cout << '\t' << i << " -> " << f[i] << '\n';
-   115	    }
-   116	  }
-   117	}
+   103	  if (argc > 1 && string(argv[1]) == "-i") {
+   104	    digraph g;
+   105	    g.load_from_file(argv[2]);
+   106	    g.find_inv3();
+   107	    g.print();
+   108	    return 0;
+   109	  }
+   110	  digraph g1, g2;
+   111	  g1.load_from_file(argv[1]);
+   112	  g2.load_from_file(argv[2]);
+   113	  cout << "# 1.digraph:\n";
+   114	  g1.print();
+   115	  cout << "# 2.digraph:\n";
+   116	  g2.print();
+   117	  DigraphIso iso(g1, g2);
+   118	  cout << "Is isomorph?: " << iso.is_iso() << endl;
+   119	  if (iso.is_iso()) {
+   120	    vector<int> f = iso.biection();
+   121	    cout << "biection:\n";
+   122	    for (int i=0; i<g1.count_vertices(); i++) {
+   123	      cout << '\t' << i << " -> " << f[i] << '\n';
+   124	    }
+   125	  }
+   126	}
 \end{verbatim}

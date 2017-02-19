@@ -1,0 +1,2 @@
+main.o: main.cpp cxxopts.hpp digraph.h
+digraph.o: digraph.cpp digraph.h
