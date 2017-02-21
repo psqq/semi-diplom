@@ -1,7 +1,7 @@
 
 BIN = semi
 SRCS = main.cpp digraph.cpp
-OBJS = $(subst .cpp,.o,$(SRCS))
+OBJS := $(SRCS:.cpp=.o)
 CFLAGS = --std=c++14
 
 all: depend $(BIN)
@@ -20,12 +20,12 @@ main.o:
 digraph.o:
 	g++ $(CFLAGS) -c digraph.cpp
 
-$(BIN): main.o digraph.o
-	g++ -o $(BIN) main.o digraph.o
+$(BIN): $(OBJS)
+	g++ -o $(BIN) $(OBJS)
 
 tests/semi: $(BIN)
 	rm tests/$(BIN) || true
 	cp $(BIN) tests/$(BIN)
 
 test: tests/semi
-	cd tests; bats tests.bats
+	cd tests && bats .

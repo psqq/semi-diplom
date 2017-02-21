@@ -18,6 +18,7 @@ public:
   Semilattice();
   Semilattice(int an);
   void load(string filename);
+  vector<int>& operator[](int i);
 };
 
 #endif /* end of include guard: SEMILATTICE_H */
