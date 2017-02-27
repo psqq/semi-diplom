@@ -2,6 +2,7 @@
 #define SEMILATTICE_H
 
 #include <iostream>
+#include <vector>
 using namespace std;
 
 class Semilattice {
@@ -18,7 +19,7 @@ public:
   Semilattice();
   Semilattice(int an);
   void load(string filename);
-  vector<int>& operator[](int i);
+  void set(int x, int y, int val);
 };
 
 #endif /* end of include guard: SEMILATTICE_H */

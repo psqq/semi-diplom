@@ -4,6 +4,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+#include "semilattice.h"
+
 class digraph {
   int n = 0; // количество вершин
   int root = 0; // корневая вершина
@@ -40,6 +42,9 @@ public:
   void find_dists();
   void find_leaves();
   void find_inv3();
+  int dist_to_root(int v);
+  int inf(int u, int v);
+  Semilattice to_semi();
 };
 
 #endif /* end of include guard: GRAPH_H */

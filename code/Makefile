@@ -1,10 +1,19 @@
 
 BIN = semi
-SRCS = main.cpp digraph.cpp
+SRCS = main.cpp digraph.cpp semilattice.cpp
 OBJS := $(SRCS:.cpp=.o)
-CFLAGS = --std=c++14
+CFLAGS = --std=c++14 -g -pipe
+LINK_FLAGS = -pipe
 
-all: depend $(BIN)
+all: clear_screen depend $(BIN)
+
+clear_screen:
+	clear
+	clear
+
+clean:
+	rm -f *.o
+	rm -f $(BIN)
 
 depend: .depend
 
@@ -14,14 +23,11 @@ depend: .depend
 
 include .depend
 
-main.o:
-	g++ $(CFLAGS) -c main.cpp
-
-digraph.o:
-	g++ $(CFLAGS) -c digraph.cpp
-
 $(BIN): $(OBJS)
-	g++ -o $(BIN) $(OBJS)
+	g++ $(LINK_FLAGS) -o $(BIN) $(OBJS)
+
+%.o: %.cpp
+	g++ $(CFLAGS) -c $<
 
 tests/semi: $(BIN)
 	rm tests/$(BIN) || true

@@ -1,5 +1,8 @@
 #include "digraph.h"
-#include <bits/stdc++.h>
+#include <vector>
+#include <iostream>
+#include <sstream>
+#include <cctype>
 using namespace std;
 
 digraph::digraph(istream &is) { load(is); }
@@ -40,19 +43,24 @@ void digraph::load(istream &is) {
     if (line.empty())
       continue;
     istringstream iss(line);
+    istringstream iss2(line);
     char c;
-    iss >> c;
+    iss2 >> c;
     int v, u;
     if (c == 'l') {
+      iss >> c;
       iss >> v;
       while (iss >> u)
         add_edge(v, u);
-    } else if (c == 'p') {
+    } else if (c == 'p' || isdigit(c)) {
+      if (!isdigit(c)) iss >> c;
       iss >> v;
       while (iss >> u) {
         add_edge(v, u);
         v = u;
       }
+    } else {
+      cout << "Ошибка: ожидалось число, символ 'p' или 'l', но получено: '" << "'" << endl;
     }
   }
 }
@@ -97,9 +105,10 @@ void digraph::print() {
   }
   if (is_leaves_finded) {
     cout << "Leaves: ";
-    for (int i=0; i<leaves.size();i++) {
+    for (int i = 0; i < leaves.size(); i++) {
       cout << leaves[i];
-      if (i < leaves.size() -1) cout << ", ";
+      if (i < leaves.size() - 1)
+        cout << ", ";
     }
     cout << endl;
   }
@@ -196,4 +205,67 @@ void digraph::find_inv3() {
       inv3_full += "; ";
   }
   is_inv3_finded = true;
+}
+
+int digraph::dist_to_root(int v) {
+  find_dists();
+  return dist[root][v];
+}
+
+int digraph::inf(int u, int v) {
+  assert(0 <= u && u < n && 0 <= v && v < n);
+  int du = dist_to_root(u), dv = dist_to_root(v);
+  set<int> us, vs;
+  us.insert(u);
+  vs.insert(v);
+  int f = 0;
+  while (1) {
+    while (du > dv || f) {
+      set<int> new_us;
+      for (int x : us) {
+        new_us.insert(input_vers[x].begin(), input_vers[x].end());
+      }
+      us = new_us;
+      du--;
+    }
+    while (dv > du) {
+      set<int> new_vs;
+      for (int x : vs) {
+        new_vs.insert(input_vers[x].begin(), input_vers[x].end());
+      }
+      vs = new_vs;
+      dv--;
+    }
+    if (us.size() == 0 || vs.size() == 0) {
+      cout << "Ошибка: у данных вершин нет inf!" << endl;
+      return -1;
+    }
+    set<int> intersect;
+    set_intersection(us.begin(), us.end(), vs.begin(), vs.end(),
+                     inserter(intersect, intersect.begin()));
+    if (intersect.size() == 1) {
+      return *intersect.begin();
+    } else if (intersect.size() > 1) {
+      cout << "Ошибка: inf имеет больше одного значения!" << endl;
+      return -1;
+    } else {
+      f = 1;
+    }
+  }
+}
+
+Semilattice digraph::to_semi() {
+  Semilattice semi(n);
+  for (int u = 0; u < n; u++) {
+    for (int v = u; v < n; v++) {
+      int res;
+      if (u == v)
+        res = u;
+      else
+        res = inf(u, v);
+      semi.set(u, v, res);
+      semi.set(v, u, res);
+    }
+  }
+  return semi;
 }

@@ -1,9 +1,12 @@
 #include "semilattice.h"
+#include <cmath>
+#include <fstream>
+#include <iostream>
+#include <vector>
+using namespace std;
 
 Semilattice::Semilattice() {}
-Semilattice::Semilattice(int an) {
-  resize(an);
-}
+Semilattice::Semilattice(int an) { resize(an); }
 
 void Semilattice::resize(int new_n) {
   n = new_n;
@@ -14,15 +17,16 @@ void Semilattice::load(string filename) {
   ifstream fin(filename);
   vector<int> nums;
   int t;
-  while (fin >> t) nums.push_back(t);
+  while (fin >> t)
+    nums.push_back(t);
   int sq = sqrt(nums.size() + .0);
-  if (sq*sq != nums.size()) {
+  if (sq * sq != nums.size()) {
     cout << "Warning: matrix in file " << filename << " don't square!" << endl;
     sq++;
   }
   resize(sq);
-  for (int i=0; i<nums.size(); i++) {
-    op[i/n][i%n] = nums[i];
+  for (int i = 0; i < nums.size(); i++) {
+    op[i / n][i % n] = nums[i];
   }
   if (!validate()) {
     cout << "Warning: semilattice don't valid!" << endl;
@@ -67,3 +71,5 @@ bool Semilattice::validate() {
              validate_idempotence();
   return is_valid;
 }
+
+void Semilattice::set(int x, int y, int val) { op[x][y] = val; }
