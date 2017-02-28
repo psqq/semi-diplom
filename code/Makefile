@@ -10,8 +10,6 @@ LINK_FLAGS = -pipe
 all: clear_screen depend $(BIN)
 
 clear_screen:
-	clear
-	clear
 
 clean:
 	rm -f *.o
