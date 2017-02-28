@@ -1,5 +1,6 @@
 #include "cxxopts.hpp"
 #include "digraph.h"
+#include "digraphiso.h"
 #include <iostream>
 using namespace std;
 
@@ -23,6 +24,7 @@ int main(int argc, char *argv[]) {
     options.add_options("digraph")
       ("count-nodes", "print count nodes in graph")
       ("to-semi", "convert digraph to semilattice")
+      ("g-is-iso", "is isomorphic", cxxopts::value<std::string>())
       ("g-inf", "comupte inf on digraph", cxxopts::value<std::string>())
       ;
 
@@ -95,6 +97,17 @@ int main(int argc, char *argv[]) {
       char ch;
       ss >> a >> ch >> b;
       outs << g.inf(a, b) << endl;
+      return 0;
+    }
+
+    if (options.count("g-is-iso")) {
+      digraph g1, g2;
+      string fn = options["g-is-iso"].as<string>();
+      ifstream f(fn);
+      g1.load_from_stream(f);
+      g2.load_from_stream(ins);
+      DigraphIso digiso(g1, g2);
+      outs << digiso.is_iso();
       return 0;
     }
 

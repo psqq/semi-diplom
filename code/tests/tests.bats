@@ -15,3 +15,9 @@
   [ "$status" -eq 0 ]
   [ "$output" = "$(cat 1-semi.txt)" ]
 }
+
+@test "test isomorphic same digraphs" {
+  run ./semi --g-is-iso line-5-dig.txt line-5-dig.txt
+  [ "$status" -eq 0 ]
+  [ "$output" = "1" ]
+}

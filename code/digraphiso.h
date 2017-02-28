@@ -1,6 +1,11 @@
 #ifndef DIGRAPHISO_H
 #define DIGRAPHISO_H
 
+#include "digraph.h"
+#include <set>
+#include <vector>
+using namespace std;
+
 class DigraphIso {
   digraph &g1, &g2;
   set<int> vertices;

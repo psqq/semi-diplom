@@ -67,7 +67,7 @@ bool DigraphIso::is_iso() {
   f.resize(n);
   for (int i=0; i<n; i++) vertices.insert(i);
   go();
-  cout << "ans " << ans << endl;
+  // cout << "ans " << ans << endl;
   if (ans < 0) ans = 0;
   return ans;
 }
