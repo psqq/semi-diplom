@@ -4,6 +4,9 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
+
+  int argc2 = argc;
+
   try {
     cxxopts::Options options(argv[0], " - command line options");
 
@@ -31,26 +34,48 @@ int main(int argc, char *argv[]) {
 
     options.parse_positional({"input", "output", "positional"});
 
-    options.parse(argc, argv);
+    options.parse(argc2, argv);
 
-    istream ins = cin;
-    ostream outs = cout;
-    digraph g;
+    istream *insp = &cin;
+    ostream *outsp = &cout;
+    ifstream fin;
+    ofstream fout;
 
     if (options.count("input")) {
-      ins = ifstream(options["input"].as<string>());
+      string input_file_name = options["input"].as<string>();
+      fin.open(input_file_name);
+      insp = &fin;
     }
     if (options.count("output")) {
-      outs = ofstream(options["output"].as<string>());
+      string output_file_name = options["output"].as<string>();
+      fout.open(output_file_name);
+      outsp = &fout;
+    }
+
+    istream &ins = *insp;
+    ostream &outs = *outsp;
+
+    if (!ins.good()) {
+      cout << "Error: input stream don't good!" << endl;
+      return 1;
+    }
+    if (!outs.good()) {
+      cout << "Error: output stream don't good!" << endl;
+      return 1;
     }
 
     if (argc == 1 || options.count("help")) {
+      cout << argc << endl;
+      cout << options.count("help") << endl;
       cout << options.help({"", "digraph", "semilattice"}) << std::endl;
       return 0;
     }
 
     if (options.count("to-semi")) {
+      digraph g;
       g.load_from_stream(ins);
+      Semilattice semi = g.to_semi();
+      outs << semi.to_text();
       return 0;
     }
 
@@ -88,10 +113,10 @@ int main(int argc, char *argv[]) {
     */
   } catch (const cxxopts::OptionException &e) {
     std::cout << "error parsing options: " << e.what() << std::endl;
-    exit(1);
+    return 1;
   } catch (...) {
     cout << "Unknow error!" << endl;
-    exit(1);
+    return 1;
   }
 
   return 0;

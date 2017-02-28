@@ -5,6 +5,8 @@ OBJS := $(SRCS:.cpp=.o)
 CFLAGS = --std=c++14 -g -pipe
 LINK_FLAGS = -pipe
 
+.PHONY: clear_screen all clean depend test
+
 all: clear_screen depend $(BIN)
 
 clear_screen:

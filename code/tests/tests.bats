@@ -10,8 +10,8 @@
   [ "$output" = "5" ]
 }
 
-@test "test convert digraph to semilattice" {
-  run ./semi --to-semi 1-dig.txt 1-semi-out.txt
+@test "test convert digraph to semilattice for one node digraph" {
+  run ./semi --to-semi 1-dig.txt
   [ "$status" -eq 0 ]
   [ "$output" = "$(cat 1-semi.txt)" ]
 }

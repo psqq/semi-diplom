@@ -2,3 +2,4 @@ graph_iso
 *.o
 main
 semi
+*.gch

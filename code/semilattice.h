@@ -18,8 +18,10 @@ private:
 public:
   Semilattice();
   Semilattice(int an);
-  void load(string filename);
+  void load_from_stream(istream &is);
+  void load_from_file(string filename);
   void set(int x, int y, int val);
+  string to_text();
 };
 
 #endif /* end of include guard: SEMILATTICE_H */

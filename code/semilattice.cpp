@@ -1,7 +1,9 @@
 #include "semilattice.h"
+#include <cassert>
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <vector>
 using namespace std;
 
@@ -9,23 +11,29 @@ Semilattice::Semilattice() {}
 Semilattice::Semilattice(int an) { resize(an); }
 
 void Semilattice::resize(int new_n) {
+  assert(new_n > 0);
   n = new_n;
   op.resize(n, vector<int>(n, 0));
 }
 
-void Semilattice::load(string filename) {
+void Semilattice::load_from_file(string filename) {
   ifstream fin(filename);
+  load_from_stream(fin);
+}
+
+void Semilattice::load_from_stream(istream &is) {
   vector<int> nums;
   int t;
-  while (fin >> t)
+  while (is >> t)
     nums.push_back(t);
   int sq = sqrt(nums.size() + .0);
   if (sq * sq != nums.size()) {
-    cout << "Warning: matrix in file " << filename << " don't square!" << endl;
+    cout << "Warning: matrix in stream don't square!" << endl;
     sq++;
   }
   resize(sq);
   for (int i = 0; i < nums.size(); i++) {
+    assert(0 <= nums[i] && nums[i] < n);
     op[i / n][i % n] = nums[i];
   }
   if (!validate()) {
@@ -72,4 +80,20 @@ bool Semilattice::validate() {
   return is_valid;
 }
 
-void Semilattice::set(int x, int y, int val) { op[x][y] = val; }
+void Semilattice::set(int x, int y, int val) {
+  assert(0 <= x && x < n && 0 <= y && y < n && 0 <= val && val < n);
+  op[x][y] = val;
+}
+
+string Semilattice::to_text() {
+  stringstream ss;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      ss << op[i][j];
+      if (j + 1 < n)
+        ss << " ";
+    }
+    ss << "\n";
+  }
+  return ss.str();
+}

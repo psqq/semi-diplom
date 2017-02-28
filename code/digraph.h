@@ -26,22 +26,23 @@ class digraph {
 private:
   void resize(int new_n);
   void add_edge(int a, int b);
-  void load(istream &is);
   void find_dists_from(int v);
+  void find_dists();
+  void find_leaves();
+  void find_inv3();
+  void update();
 public:
   digraph(istream &is);
   digraph(string s);
   digraph(int an = 0);
   void load_from_file(string file_name);
+  void load_from_stream(istream &is);
   int count_vertices();
   bool is_edge(int a, int b);
   vector<pair<int, int>> edges();
   void print();
   int degree(int v);
   vector<int> output_vertices(int k);
-  void find_dists();
-  void find_leaves();
-  void find_inv3();
   int dist_to_root(int v);
   int inf(int u, int v);
   Semilattice to_semi();

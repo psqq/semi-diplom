@@ -5,11 +5,11 @@
 #include <cctype>
 using namespace std;
 
-digraph::digraph(istream &is) { load(is); }
+digraph::digraph(istream &is) { load_from_stream(is); }
 
 digraph::digraph(string s) {
   stringstream ss(s);
-  load(ss);
+  load_from_stream(ss);
 }
 
 digraph::digraph(int an) { resize(an); }
@@ -29,10 +29,10 @@ void digraph::load_from_file(string file_name) {
     cout << "File '" << file_name << "' not found!" << endl;
     exit(1);
   }
-  load(fin);
+  load_from_stream(fin);
 }
 
-void digraph::load(istream &is) {
+void digraph::load_from_stream(istream &is) {
   string line;
   getline(is, line);
   istringstream iss(line);
