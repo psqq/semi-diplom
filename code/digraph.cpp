@@ -1,14 +1,14 @@
 #include "digraph.h"
 #include "semilattice.h"
-#include <cctype>
-#include <iostream>
-#include <sstream>
-#include <vector>
-#include <cassert>
-#include <fstream>
 #include <algorithm>
+#include <cassert>
+#include <cctype>
+#include <fstream>
+#include <iostream>
 #include <queue>
 #include <set>
+#include <sstream>
+#include <vector>
 using namespace std;
 
 digraph::digraph(istream &is) { load_from_stream(is); }
@@ -44,8 +44,10 @@ void digraph::load_from_stream(istream &is) {
   istringstream iss(line);
   iss >> n;
   resize(n);
+  int line_number = 1;
   while (!is.eof()) {
     getline(is, line);
+    line_number++;
     if (line.empty())
       continue;
     istringstream iss(line);
@@ -67,7 +69,8 @@ void digraph::load_from_stream(istream &is) {
         v = u;
       }
     } else {
-      cout << "Ошибка: ожидалось число, символ 'p' или 'l', но получено: '"
+      cout << "Ошибка (в строке " << line_number
+           << "): ожидалось число, символ 'p' или 'l', но получено: '" << c
            << "'" << endl;
     }
   }
@@ -302,7 +305,8 @@ void digraph::check_is_tree() {
 }
 
 bool digraph::is_tree() {
-  if (_is_tree < 0) check_is_tree();
+  if (_is_tree < 0)
+    check_is_tree();
   return _is_tree;
 }
 
@@ -315,19 +319,15 @@ void digraph::update() {
 
 string digraph::encode_as_tree_for_vertex(int v) {
   string res = "0";
-  for(int u: adj_list[v]) {
+  for (int u : adj_list[v]) {
     res += encode_as_tree_for_vertex(u);
   }
   return res + "1";
 }
 
-string digraph::encode_as_tree() {
-  return encode_as_tree_for_vertex(root);
-}
+string digraph::encode_as_tree() { return encode_as_tree_for_vertex(root); }
 
-int digraph::get_root() {
-  return root;
-}
+int digraph::get_root() { return root; }
 
 string digraph::to_text() {
   stringstream ss;
