@@ -1,8 +1,11 @@
+#include "digraph.h"
 #include "semilattice.h"
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <set>
 #include <sstream>
 #include <vector>
 using namespace std;
@@ -80,7 +83,7 @@ bool Semilattice::validate() {
   return is_valid;
 }
 
-void Semilattice::set(int x, int y, int val) {
+void Semilattice::set_op(int x, int y, int val) {
   assert(0 <= x && x < n && 0 <= y && y < n && 0 <= val && val < n);
   op[x][y] = val;
 }
@@ -96,4 +99,36 @@ string Semilattice::to_text() {
     ss << "\n";
   }
   return ss.str();
+}
+
+digraph Semilattice::to_digraph() {
+  digraph g(n);
+  g.root = 0;
+  for (int x = 0; x < n; x++) {
+    g.root = op[g.root][x];
+  }
+  set<int> level = {g.root};
+  while (!level.empty()) {
+    set<int> new_level;
+    for (int x: level) {
+      for (int y = 0; y < n; y++) {
+        if (y != x && op[y][x] == x){
+          int flag = 1;
+          for (int z = 0; z < n; z++) {
+            if (z != x && z != y && op[z][x] == x && op[z][y] == z) {
+              flag = 0;
+              break;
+            }
+          }
+          if (flag) {
+            g.add_edge(x, y);
+            new_level.insert(y);
+          }
+        }
+      }
+    }
+    level = new_level;
+  }
+  g.update();
+  return g;
 }

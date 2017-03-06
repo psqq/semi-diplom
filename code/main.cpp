@@ -1,7 +1,9 @@
 #include "cxxopts.hpp"
 #include "digraph.h"
 #include "digraphiso.h"
+#include "semilattice.h"
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -108,6 +110,21 @@ int main(int argc, char *argv[]) {
       g2.load_from_stream(ins);
       DigraphIso digiso(g1, g2);
       outs << digiso.is_iso();
+      return 0;
+    }
+
+    if (options.count("to-digraph")) {
+      Semilattice s;
+      s.load_from_stream(ins);
+      digraph g = s.to_digraph();
+      outs << g.to_text();
+      return 0;
+    }
+
+    if (options.count("validate")) {
+      Semilattice s;
+      s.load_from_stream(ins);
+      outs << s.validate() << endl;
       return 0;
     }
 

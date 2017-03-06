@@ -1,7 +1,8 @@
 #include "digraphiso.h"
+#include <algorithm>
+using namespace std;
 
-DigraphIso::DigraphIso(digraph &ag1, digraph &ag2)
-  : g1(ag1), g2(ag2) {}
+DigraphIso::DigraphIso(digraph &ag1, digraph &ag2) : g1(ag1), g2(ag2) {}
 
 bool DigraphIso::match(int v) {
   // Подмножество g1 {0, 1, ..., g1_k - 1} изоморфно
@@ -35,16 +36,14 @@ void DigraphIso::go() {
   }
   g1_k += 1;
   set<int> t;
-  set_difference(
-    vertices.begin(), vertices.end(),
-    g2_s.begin(), g2_s.end(),
-    inserter(t, t.end())
-  );
+  set_difference(vertices.begin(), vertices.end(), g2_s.begin(), g2_s.end(),
+                 inserter(t, t.end()));
   // cout << "t: ";
   // for (int i : t) cout << i << " ";
   // cout << endl;
   for (int v : t) {
-    if (ans >= 0) return;
+    if (ans >= 0)
+      return;
     if (match(v)) {
       // cout << g1_k << " match " << v << endl;
       f[g1_k] = v;
@@ -59,19 +58,21 @@ void DigraphIso::go() {
 }
 
 bool DigraphIso::is_iso() {
-  if (ans >= 0) return ans;
+  if (ans >= 0)
+    return ans;
   if (g1.count_vertices() != g2.count_vertices()) {
     return false;
   }
   n = g1.count_vertices();
   f.resize(n);
-  for (int i=0; i<n; i++) vertices.insert(i);
+  f[g1.get_root()] = g2.get_root();
+  for (int i = 0; i < n; i++)
+    vertices.insert(i);
   go();
   // cout << "ans " << ans << endl;
-  if (ans < 0) ans = 0;
+  if (ans < 0)
+    ans = 0;
   return ans;
 }
 
-vector<int> DigraphIso::biection() {
-  return f;
-}
+vector<int> DigraphIso::biection() { return f; }

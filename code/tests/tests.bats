@@ -21,3 +21,9 @@
   [ "$status" -eq 0 ]
   [ "$output" = "1" ]
 }
+
+@test "test convert semilattice to digraph" {
+  run ./semi --to-digraph line-5-dig.txt line-5-dig.txt
+  [ "$status" -eq 0 ]
+  [ "$output" = "1" ]
+}

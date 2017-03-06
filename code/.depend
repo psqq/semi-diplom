@@ -1,4 +1,4 @@
-main.o: main.cpp cxxopts.hpp digraph.h semilattice.h digraphiso.h
+main.o: main.cpp cxxopts.hpp digraph.h digraphiso.h semilattice.h
 digraph.o: digraph.cpp digraph.h semilattice.h
-semilattice.o: semilattice.cpp semilattice.h
-digraphiso.o: digraphiso.cpp digraphiso.h digraph.h semilattice.h
+semilattice.o: semilattice.cpp digraph.h semilattice.h
+digraphiso.o: digraphiso.cpp digraphiso.h digraph.h

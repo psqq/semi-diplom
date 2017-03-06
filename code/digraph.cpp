@@ -1,8 +1,14 @@
 #include "digraph.h"
-#include <vector>
+#include "semilattice.h"
+#include <cctype>
 #include <iostream>
 #include <sstream>
-#include <cctype>
+#include <vector>
+#include <cassert>
+#include <fstream>
+#include <algorithm>
+#include <queue>
+#include <set>
 using namespace std;
 
 digraph::digraph(istream &is) { load_from_stream(is); }
@@ -53,16 +59,19 @@ void digraph::load_from_stream(istream &is) {
       while (iss >> u)
         add_edge(v, u);
     } else if (c == 'p' || isdigit(c)) {
-      if (!isdigit(c)) iss >> c;
+      if (!isdigit(c))
+        iss >> c;
       iss >> v;
       while (iss >> u) {
         add_edge(v, u);
         v = u;
       }
     } else {
-      cout << "Ошибка: ожидалось число, символ 'p' или 'l', но получено: '" << "'" << endl;
+      cout << "Ошибка: ожидалось число, символ 'p' или 'l', но получено: '"
+           << "'" << endl;
     }
   }
+  update();
 }
 
 int digraph::count_vertices() { return n; }
@@ -79,6 +88,7 @@ void digraph::add_edge(int a, int b) {
   input_vers[b].push_back(a);
   adj_list[a].push_back(b);
   adj_mat[a][b] = 1;
+  m++;
 }
 
 vector<pair<int, int>> digraph::edges() {
@@ -263,9 +273,72 @@ Semilattice digraph::to_semi() {
         res = u;
       else
         res = inf(u, v);
-      semi.set(u, v, res);
-      semi.set(v, u, res);
+      semi.set_op(u, v, res);
+      semi.set_op(v, u, res);
     }
   }
   return semi;
+}
+
+void digraph::check_is_tree() {
+  queue<int> q;
+  vector<bool> used(n, false);
+  int count_used = 0;
+  q.push(root);
+  while (!q.empty()) {
+    int v = q.front();
+    q.pop();
+    used[v] = true;
+    count_used++;
+    for (int u = 0; u < n; u++) {
+      if (is_edge(v, u) || is_edge(u, v)) {
+        if (!used[u]) {
+          q.push(u);
+        }
+      }
+    }
+  }
+  _is_tree = count_used == n && m == n - 1;
+}
+
+bool digraph::is_tree() {
+  if (_is_tree < 0) check_is_tree();
+  return _is_tree;
+}
+
+void digraph::update() {
+  find_dists();
+  find_inv3();
+  find_leaves();
+  check_is_tree();
+}
+
+string digraph::encode_as_tree_for_vertex(int v) {
+  string res = "0";
+  for(int u: adj_list[v]) {
+    res += encode_as_tree_for_vertex(u);
+  }
+  return res + "1";
+}
+
+string digraph::encode_as_tree() {
+  return encode_as_tree_for_vertex(root);
+}
+
+int digraph::get_root() {
+  return root;
+}
+
+string digraph::to_text() {
+  stringstream ss;
+  ss << n << "\n";
+  ss << "r " << root << "\n";
+  for (int u = 0; u < n; u++) {
+    for (int v = u; v < n; v++) {
+      if (is_edge(u, v)) {
+        ss << u << " " << v << "\n";
+      }
+    }
+  }
+  return ss.str();
 }
