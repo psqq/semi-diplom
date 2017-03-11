@@ -1,5 +1,6 @@
 #include "cxxtest/TestSuite.h"
 #include "digraph.h"
+#include "exceptions.h"
 #include <cstdlib>
 #include <set>
 using namespace std;
@@ -58,5 +59,45 @@ public:
                          edges.find(make_pair(u, v)) != edges.end());
       }
     }
+  }
+
+  void test_SimpleDigraph_METHODS_successsors() {
+    SimpleDigraph g1(5);
+    g1.add_edges({{1, 2}, {1, 4}, {0, 1}});
+    auto v = g1.successsors(1);
+    vector<int> ans = {2, 4};
+    // for (auto x : v) cout << endl << x << endl;
+    TS_ASSERT(v.size() == ans.size() && equal(v.begin(), v.end(), ans.begin()));
+  }
+
+  void test_SimpleDigraph_METHODS_predecessors() {
+    SimpleDigraph g1(5);
+    g1.add_edges({{1, 2}, {1, 4}, {0, 1}, {3, 1}});
+    auto v = g1.predecessors(1);
+    vector<int> ans = {0, 3};
+    // for (auto x : v) cout << endl << x << endl;
+    TS_ASSERT(v.size() == ans.size() && equal(v.begin(), v.end(), ans.begin()));
+  }
+
+  void test_SimpleDigraph_METHODS_shortest_path_length() {
+    SimpleDigraph g1(5);
+    g1.add_edges({{1, 2}, {2, 3}});
+    TS_ASSERT_EQUALS(g1.shortest_path_length(1, 1), 0);
+    TS_ASSERT_EQUALS(g1.shortest_path_length(1, 2), 1);
+    TS_ASSERT_EQUALS(g1.shortest_path_length(1, 3), 2);
+    bool not_found = false;
+    try {
+      g1.shortest_path_length(3, 1);
+    } catch (SimpleDigraphPathDontFoundException &e) {
+      not_found = true;
+    }
+    TS_ASSERT(not_found);
+    not_found = false;
+    try {
+      g1.shortest_path_length(0, 4);
+    } catch (SimpleDigraphPathDontFoundException &e) {
+      not_found = true;
+    }
+    TS_ASSERT(not_found);
   }
 };

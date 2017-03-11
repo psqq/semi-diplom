@@ -16,6 +16,7 @@ public:
   SimpleDigraph(int n = 0);
   int add_node();
   void add_edge(int u, int v);
+  void add_edges(std::vector<std::pair<int, int>> edges);
   bool is_edge(int u, int v);
   std::vector<int> successsors(int u);
   std::vector<int> predecessors(int u);
@@ -38,6 +39,7 @@ public:
   bool is_node(T v);
   bool add_edge(T u, T v);
   void load_from_stream(std::istream &is);
+  void load_from_string(std::string str);
   void load_from_file(std::string filename);
   int add_node();
   bool add_edge(int u, int v);

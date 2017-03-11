@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <queue>
 #include <sstream>
+#include <vector>
 using namespace std;
 
 SimpleDigraph::SimpleDigraph(int an) { resize(an); }
@@ -45,6 +46,13 @@ void SimpleDigraph::add_edge(int u, int v) {
   throw_exception_if_node_does_not_exist(u);
   throw_exception_if_node_does_not_exist(v);
   adj_matrix[u][v] = 1;
+}
+
+
+void SimpleDigraph::add_edges(vector<pair<int, int>> edges) {
+  for (auto &p : edges) {
+    add_edge(p.first, p.second);
+  }
 }
 
 bool SimpleDigraph::is_edge(int u, int v) {
