@@ -32,5 +32,5 @@ $(BIN): $(OBJS)
 
 t: run_tests
 
-run_tests:
-	cd tests; make
+run_tests: $(OBJS)
+	cd tests; make run_tests

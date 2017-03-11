@@ -5,10 +5,7 @@
 #include <sstream>
 using namespace std;
 
-SimpleDigraph::SimpleDigraph(int an) {
-  n = an;
-  resize(n);
-}
+SimpleDigraph::SimpleDigraph(int an) { resize(an); }
 
 void SimpleDigraph::resize(int new_n) {
   if (new_n < 0) {
@@ -22,9 +19,11 @@ void SimpleDigraph::resize(int new_n) {
                                               buffer_limit);
     }
     max_n = new_max_n;
+  }
+  if (adj_matrix.size() != max_n) {
     adj_matrix.resize(max_n);
-    for (auto line : adj_matrix)
-      line.resize(max_n);
+    for (int i = 0; i < max_n; i++)
+      adj_matrix[i].resize(max_n);
   }
 }
 

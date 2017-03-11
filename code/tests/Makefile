@@ -1,13 +1,19 @@
 
-all: run
+BIN = tests
+OBJS := $(filter-out ../main.o,$(wildcard ../*.o)) tests.o
 
-.PHONY: run
+all: $(BIN)
+
+.PHONY: run_tests
 
 tests.cpp: MyTestSuite.h
 	cxxtestgen --error-printer -o tests.cpp MyTestSuite.h
 
-tests: tests.cpp
-	g++ -o tests tests.cpp -I.
+tests.o: tests.cpp
+	g++ -g -c tests.cpp --std=c++14 -I. -I..
 
-run: tests
-	./tests
+$(BIN): $(OBJS)
+	g++ -o $(BIN) $(OBJS) -I. -I..
+
+run_tests: $(BIN)
+	./$(BIN)
