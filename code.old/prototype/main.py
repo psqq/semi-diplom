@@ -146,6 +146,8 @@ def digraph_is_tree(g: nx.DiGraph):
 
 
 def encode_tree(g: nx.DiGraph):
+    if g.number_of_nodes() == 0:
+        return ""
     root = find_root(g)
     def go(v):
         s = "0"
@@ -159,19 +161,62 @@ def tree_is_isomorphic(t1, t2):
     return encode_tree(t1) == encode_tree(t2)
 
 
-# TODO: !!!
 def find_branches_of_digraph(g: nx.DiGraph):
     branches = []
     root = find_root(g)
-    def vertexes_of_subgraph_with_root(v):
+    def vertexes_of_subgraph_with_root(v) -> set:
         t = {v}
         for u in g.successors(v):
             t.update(vertexes_of_subgraph_with_root(u))
         return t
     for v in g.successors(root):
         t = vertexes_of_subgraph_with_root(v)
-        for
+        new_branches = []
+        for b in branches:
+            if len(t.intersection(b)) > 0:
+                t.update(b)
+            else:
+                new_branches.append(b)
+        new_branches.append(t)
+        branches = new_branches
+    for b in branches:
+        b.add(root)
     return branches
+
+
+# поиск вершин у которых количество predecessoros > 1
+def find_cyclic_vers(g: nx.DiGraph):
+    res = set()
+    for v in g.nodes():
+        if len(g.predecessors(v)) > 1:
+            res.add(v)
+    return res
+
+
+def find_subgraph(g: nx.DiGraph, vers: set):
+    subg = nx.DiGraph()
+    for u in vers:
+        subg.add_node(u)
+    for u in vers:
+        for v in vers:
+            if g.has_edge(u, v):
+                subg.add_edge(u, v)
+    return subg
+
+
+def find_G1_and_G2_graphs(g: nx.DiGraph) -> (nx.DiGraph, nx.DiGraph):
+    branches = find_branches_of_digraph(g)
+    cyclic_vers = find_cyclic_vers(g)
+    G1_vers = set()
+    G2_vers = set()
+    for b in branches:
+        if len(cyclic_vers.intersection(b)) > 0:
+            G2_vers.update(b)
+        else:
+            G1_vers.update(b)
+    G1 = find_subgraph(g, G1_vers)
+    G2 = find_subgraph(g, G2_vers)
+    return (G1, G2)
 
 
 def semilattices_is_isomorphic(s1, s2):
@@ -180,16 +225,26 @@ def semilattices_is_isomorphic(s1, s2):
     n = g1.number_of_nodes()
     if n != g2.number_of_nodes() or g1.number_of_edges() != g2.number_of_edges():
         return False
-    if digraph_is_tree(g1) and digraph_is_tree(g2):
+    g1_is_tree = digraph_is_tree(g1)
+    if g1_is_tree != digraph_is_tree(g2):
+        return False
+    if g1_is_tree:
         return tree_is_isomorphic(g1, g2)
-    g1_branches = []
+    g1_G1, g1_G2 = find_G1_and_G2_graphs(g1)
+    g2_G1, g2_G2 = find_G1_and_G2_graphs(g2)
+    if not tree_is_isomorphic(g1_G1, g2_G1) or not tree_is_isomorphic(g1_G2, g2_G2):
+        return False
 
 
-g = load_digraph_from_file('3.dig')
+g = load_digraph_from_file('1.dig')
 s = to_semi(g)
-# print(s)
-print(is_valid_semi(s))
-print(semi_to_text(s))
+G1, G2 = find_G1_and_G2_graphs(g)
+
+print("is_valid_semi", is_valid_semi(s))
+print(semi_to_text(s), end="")
+print("branches", find_branches_of_digraph(g))
+print("G1", G1.nodes(), G1.edges())
+print("G2", G2.nodes(), G2.edges())
 
 g2 = to_digraph(s)
 print("nx.is_isomorphic(g, g2) ==", nx.is_isomorphic(g, g2))
