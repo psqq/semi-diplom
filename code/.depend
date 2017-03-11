@@ -1,0 +1,3 @@
+main.o: main.cpp digraph.h exceptions.h
+digraph.o: digraph.cpp digraph.h exceptions.h
+exceptions.o: exceptions.cpp digraph.h exceptions.h
