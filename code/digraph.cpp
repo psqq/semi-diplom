@@ -92,7 +92,26 @@ int SimpleDigraph::number_of_edges() {
   return m;
 }
 
-bool SimpleDigraph::is_tree() { return n - 1 == number_of_edges(); }
+bool SimpleDigraph::is_tree_with_root(int root) {
+  if (number_of_nodes() - 1 != number_of_edges()) return false;
+  queue<int> q;
+  vector<bool> used(n);
+  q.push(root);
+  while (!q.empty()) {
+    int w = q.front();
+    q.pop();
+    used[w] = true;
+    for (int i = 0; i < n; i++) {
+      if (adj_matrix[w][i] && !used[i]) {
+        q.push(i);
+      }
+    }
+  }
+  for (int i = 0; i < n; i++) {
+    if (!used[i]) return false;
+  }
+  return true;
+}
 
 int SimpleDigraph::shortest_path_length(int u, int v) {
   queue<pair<int, int>> q;

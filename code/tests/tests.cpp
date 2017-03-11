@@ -64,5 +64,11 @@ public:
  void runTest() { suite_MyTestSuite.test_SimpleDigraph_METHODS_shortest_path_length(); }
 } testDescription_suite_MyTestSuite_test_SimpleDigraph_METHODS_shortest_path_length;
 
+static class TestDescription_suite_MyTestSuite_test_SimpleDigraph_METHODS_is_tree_with_root : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_MyTestSuite_test_SimpleDigraph_METHODS_is_tree_with_root() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 104, "test_SimpleDigraph_METHODS_is_tree_with_root" ) {}
+ void runTest() { suite_MyTestSuite.test_SimpleDigraph_METHODS_is_tree_with_root(); }
+} testDescription_suite_MyTestSuite_test_SimpleDigraph_METHODS_is_tree_with_root;
+
 #include <cxxtest/Root.cpp>
 const char* CxxTest::RealWorldDescription::_worldName = "cxxtest";

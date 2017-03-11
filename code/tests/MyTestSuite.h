@@ -100,4 +100,15 @@ public:
     }
     TS_ASSERT(not_found);
   }
+
+  void test_SimpleDigraph_METHODS_is_tree_with_root() {
+    SimpleDigraph g1(3);
+    g1.add_edges({{0, 1}, {0, 2}});
+    TS_ASSERT(g1.is_tree_with_root(0));
+    SimpleDigraph g2(3);
+    g2.add_edges({{0, 1}, {2, 1}});
+    TS_ASSERT(!g2.is_tree_with_root(0));
+    TS_ASSERT(!g2.is_tree_with_root(1));
+    TS_ASSERT(!g2.is_tree_with_root(2));
+  }
 };

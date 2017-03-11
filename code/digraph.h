@@ -22,7 +22,7 @@ public:
   std::vector<int> predecessors(int u);
   int number_of_nodes();
   int number_of_edges();
-  bool is_tree();
+  bool is_tree_with_root(int root);
   int shortest_path_length(int u, int v);
   bool is_node_exist(int v);
   void throw_exception_if_node_does_not_exist(int u);
