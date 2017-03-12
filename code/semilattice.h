@@ -41,6 +41,7 @@ public:
   int size();
   std::set<T> elements();
   T inf(T a, T b);
+  void set_inf(T a, T b, T c);
   void throw_exception_if_element_does_not_exist(T a);
 };
 

@@ -224,10 +224,46 @@ public:
   //----------------------------------------------------------------------------
   // SEMILATTICE<T> DIGRAPH TESTS
   //----------------------------------------------------------------------------
+  void test_Semilattice_from_string() {
+    Semilattice<int> s1;
+    s1.from_string("0");
+    TS_ASSERT_EQUALS(s1.size(), 1);
+    TS_ASSERT_EQUALS(s1.inf(0, 0), 0);
+    Semilattice<string> s2;
+    s2.from_string("a");
+    TS_ASSERT_EQUALS(s2.size(), 1);
+    TS_ASSERT_EQUALS(s2.inf("a", "a"), "a");
+    Semilattice<int> s3;
+    // s3.from_string("0 0 0 1");
+    s3.from_string(R"(
+      0 0
+      0 1
+    )");
+    TS_ASSERT_EQUALS(s3.size(), 2);
+    TS_ASSERT_EQUALS(s3.inf(0, 0), 0);
+    TS_ASSERT_EQUALS(s3.inf(0, 1), 0);
+    TS_ASSERT_EQUALS(s3.inf(1, 0), 0);
+    TS_ASSERT_EQUALS(s3.inf(1, 1), 1);
+    Semilattice<string> s4;
+    // s4.from_string("a b b b");
+    s4.from_string(R"(
+      a b
+      b b
+    )");
+    TS_ASSERT_EQUALS(s4.size(), 2);
+    TS_ASSERT_EQUALS(s4.inf("a", "a"), "a");
+    TS_ASSERT_EQUALS(s4.inf("a", "b"), "b");
+    TS_ASSERT_EQUALS(s4.inf("b", "a"), "b");
+    TS_ASSERT_EQUALS(s4.inf("b", "b"), "b");
+  }
 
   //----------------------------------------------------------------------------
   // SEMIISO MODULE TESTS
   //----------------------------------------------------------------------------
+  void test_FUNCTION_to_digraph() {
+    
+  }
+
   void test_FUNCTION_is_isomorphic_for_Semilattices() {
     Semilattice<string> s1, s2;
     s1.from_string("0");
