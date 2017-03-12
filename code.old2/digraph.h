@@ -6,7 +6,7 @@
 #include <vector>
 
 class SimpleDigraph {
-  const int BUFFER_INCREASE = 100;
+  static const int BUFFER_INCREASE = 100;
   int buffer_limit = 100000;
   int n = 0, max_n = 0;
   std::vector<std::vector<int>> adj_matrix;
@@ -39,7 +39,7 @@ public:
   bool is_node(T v);
   bool add_edge(T u, T v);
   void load_from_stream(std::istream &is);
-  void load_from_string(std::string str);
+  void from_string(std::string str);
   void load_from_file(std::string filename);
   int add_node();
   bool add_edge(int u, int v);

@@ -1,5 +1,6 @@
 #include "digraph.h"
 #include "exceptions.h"
+#include "semilattice.h"
 #include <sstream>
 using namespace std;
 
@@ -34,3 +35,20 @@ SimpleDigraphBufferLimitException::SimpleDigraphBufferLimitException(
      << endl;
   msg = ss.str();
 }
+
+BufferLimitException::BufferLimitException(string amsg, int max_n,
+                                           int new_max_n, int buffer_limit) {
+  stringstream ss;
+  ss << amsg << " Current buffer size: " << max_n
+     << ". New buffer size: " << new_max_n << ". Buffer limit: " << buffer_limit
+     << endl;
+  msg = ss.str();
+}
+
+// SimpleSemilatticeElementDoesNotExist::SimpleSemilatticeElementDoesNotExist(
+//     SimpleSemilattice *s, int el) {
+//   stringstream ss;
+//   ss << "Element " << el << " does not exist in semilattice of size "
+//      << s->size() << ".";
+//   msg = ss.str();
+// }

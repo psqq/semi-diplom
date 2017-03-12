@@ -15,6 +15,22 @@ public:
   virtual const char *what() const throw();
 };
 
+class WrongSizeException : public GeneralException {
+public:
+  WrongSizeException(std::string amsg = "") : GeneralException(amsg) {}
+};
+
+class BufferLimitException : public GeneralException {
+public:
+  BufferLimitException(std::string amsg, int new_max_n, int max_n,
+                                    int buffer_limit);
+};
+
+// class SimpleSemilatticeElementDoesNotExist : public GeneralException {
+// public:
+//   SimpleSemilatticeElementDoesNotExist(int el);
+// };
+
 class SimpleDigraphException : public GeneralException {
 public:
   SimpleDigraphException(SimpleDigraph *g = nullptr, std::string amsg = "");

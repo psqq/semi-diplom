@@ -1,6 +1,7 @@
 #include "cxxtest/TestSuite.h"
 #include "digraph.h"
 #include "exceptions.h"
+#include "semilattice.h"
 #include <cstdlib>
 #include <set>
 using namespace std;
@@ -110,5 +111,25 @@ public:
     TS_ASSERT(!g2.is_tree_with_root(0));
     TS_ASSERT(!g2.is_tree_with_root(1));
     TS_ASSERT(!g2.is_tree_with_root(2));
+  }
+
+  void test_FUNCTION_is_isomorphic_for_Semilattices() {
+    Semilattice s1, s2;
+    s1.from_string("0");
+    s2.from_string("a");
+    TS_ASSERT(is_isomorphic(s1, s1));
+    TS_ASSERT(is_isomorphic(s2, s2));
+    TS_ASSERT(is_isomorphic(s1, s2));
+    TS_ASSERT(is_isomorphic(s2, s1));
+    s1.from_string(R"(
+      0 0
+      0 1
+    )");
+    s2.from_string(R"(
+      0 1
+      1 1
+    )");
+    TS_ASSERT(is_isomorphic(s1, s1));
+    TS_ASSERT(is_isomorphic(s1, s2));
   }
 };
