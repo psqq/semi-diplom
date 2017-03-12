@@ -36,10 +36,14 @@ public:
   SimpleDigraphException(SimpleDigraph *g = nullptr, std::string amsg = "");
 };
 
-class SimpleDigraphPathDontFoundException : public SimpleDigraphException {
+template<class T>
+class PathDontFoundException : public SimpleDigraphException {
 public:
-  SimpleDigraphPathDontFoundException(SimpleDigraph *g, int from, int to);
+  PathDontFoundException(T from, T to);
 };
+
+template class PathDontFoundException<int>;
+template class PathDontFoundException<std::string>;
 
 class SimpleDigraphNodeDoesNotExistEception : public SimpleDigraphException {
 public:

@@ -2,7 +2,6 @@
 #define SEMILATTICE_H
 
 #include <unordered_map>
-#include <map>
 #include <set>
 #include <vector>
 
@@ -27,24 +26,18 @@ public:
   bool is_idempotence();
 };
 
-template <class T> class Semilattice {
+template <typename T> class Semilattice {
   std::set<T> _elements;
-  std::map<T, int> id;
-  std::vector<T> name;
+  std::unordered_map<T, int> id;
   SimpleSemilattice simple_semilattice;
 
 public:
-  void load_from_stream(std::istream &is);
-  void from_string(std::string s);
   void add_element(T a);
-  bool is_element(T a);
-  int size();
-  std::set<T> elements();
+  bool is_element(T a) { return _elements.find(a) != _elements.end(); }
+  int size() { return simple_semilattice.size(); }
+  std::set<T> elements() { return _elements; }
   T inf(T a, T b);
-  void throw_exception_if_element_does_not_exist(T a);
+  void throw_exception_if_element_does_not_exist(int a);
 };
-
-template class Semilattice<std::string>;
-template class Semilattice<int>;
 
 #endif /* end of include guard: SEMILATTICE_H */

@@ -1,6 +1,7 @@
 #include "digraph.h"
 #include "exceptions.h"
 #include <algorithm>
+#include <fstream>
 #include <queue>
 #include <sstream>
 #include <vector>
@@ -48,7 +49,6 @@ void SimpleDigraph::add_edge(int u, int v) {
   adj_matrix[u][v] = 1;
 }
 
-
 void SimpleDigraph::add_edges(vector<pair<int, int>> edges) {
   for (auto &p : edges) {
     add_edge(p.first, p.second);
@@ -61,7 +61,7 @@ bool SimpleDigraph::is_edge(int u, int v) {
   return adj_matrix[u][v];
 }
 
-vector<int> SimpleDigraph::successsors(int u) {
+vector<int> SimpleDigraph::successors(int u) {
   vector<int> res;
   for (int v = 0; v < n; v++) {
     if (adj_matrix[u][v])
@@ -93,7 +93,8 @@ int SimpleDigraph::number_of_edges() {
 }
 
 bool SimpleDigraph::is_tree_with_root(int root) {
-  if (number_of_nodes() - 1 != number_of_edges()) return false;
+  if (number_of_nodes() - 1 != number_of_edges())
+    return false;
   queue<int> q;
   vector<bool> used(n);
   q.push(root);
@@ -108,7 +109,8 @@ bool SimpleDigraph::is_tree_with_root(int root) {
     }
   }
   for (int i = 0; i < n; i++) {
-    if (!used[i]) return false;
+    if (!used[i])
+      return false;
   }
   return true;
 }
@@ -130,5 +132,121 @@ int SimpleDigraph::shortest_path_length(int u, int v) {
       }
     }
   }
-  throw SimpleDigraphPathDontFoundException(this, u, v);
+  throw PathDontFoundException<int>(u, v);
+}
+
+template <class T> Digraph<T>::Digraph() {}
+
+template <class T> void Digraph<T>::add_node(T v) {
+  if (is_node(v))
+    return;
+  id[v] = simple_digraph.add_node();
+  name.push_back(v);
+  _elements.insert(v);
+}
+
+template <class T> bool Digraph<T>::is_node(T v) {
+  return _elements.find(v) != _elements.end();
+}
+
+template <class T> set<T> Digraph<T>::nodes() { return _elements; }
+
+template <class T> void Digraph<T>::add_edge(T u, T v) {
+  if (!is_node(u))
+    add_node(u);
+  if (!is_node(v))
+    add_node(v);
+  simple_digraph.add_edge(id[u], id[v]);
+}
+
+template <class T> void Digraph<T>::load_from_stream(std::istream &is) {
+  string line;
+  getline(is, line);
+  int line_number = 1;
+  while (!is.eof()) {
+    getline(is, line);
+    line_number++;
+    if (line.empty())
+      continue;
+    istringstream iss(line);
+    T u, v;
+    iss >> u;
+    while (iss >> v) {
+      add_edge(u, v);
+      u = v;
+    }
+  }
+}
+
+template <class T> void Digraph<T>::from_string(std::string str) {
+  stringstream ss(str);
+  load_from_stream(ss);
+}
+
+template <class T> void Digraph<T>::load_from_file(std::string filename) {
+  ifstream f(filename);
+  load_from_stream(f);
+}
+
+template <class T> bool Digraph<T>::is_edge(T u, T v) {
+  if (!is_node(u) || !is_node(v))
+    return false;
+  return simple_digraph.is_edge(id[u], id[v]);
+}
+
+template <class T> vector<T> Digraph<T>::successors(T v) {
+  vector<T> res;
+  if (!is_node(v))
+    return res;
+  int vv = id[v];
+  for (int u : simple_digraph.successors(vv)) {
+    res.push_back(name[u]);
+  }
+  return res;
+}
+
+template <class T> vector<T> Digraph<T>::predecessors(T v) {
+  vector<T> res;
+  if (!is_node(v))
+    return res;
+  int vv = id[v];
+  for (int u : simple_digraph.predecessors(vv)) {
+    res.push_back(name[u]);
+  }
+  return res;
+}
+
+template <class T> int Digraph<T>::number_of_nodes() {
+  return simple_digraph.number_of_nodes();
+}
+
+template <class T> int Digraph<T>::number_of_edges() {
+  return simple_digraph.number_of_edges();
+}
+
+template <class T> bool Digraph<T>::is_tree_with_root(T root) {
+  if (!is_node(root))
+    return false;
+  return simple_digraph.is_tree_with_root(id[root]);
+}
+
+template <class T> int Digraph<T>::shortest_path_length(T u, T v) {
+  if (!is_node(u) || !is_node(v))
+    throw PathDontFoundException<T>(u, v);
+  try {
+    return simple_digraph.shortest_path_length(id[u], id[v]);
+  } catch (PathDontFoundException<int> &e) {
+    throw PathDontFoundException<T>(u, v);
+  }
+}
+
+template <class T> void Digraph<T>::add_edges(vector<pair<T, T>> edges) {
+  for (auto p : edges) {
+    add_edge(p.first, p.second);
+  }
+}
+
+template <class T> void Digraph<T>::add_nodes(vector<T> nodes) {
+  for (T v : nodes)
+    add_node(v);
 }

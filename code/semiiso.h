@@ -1,10 +1,18 @@
 #ifndef SEMIISO_H
 #define SEMIISO_H
 
-#include "semilattice.h"
 #include "digraph.h"
+#include "semilattice.h"
+#include <string>
 
 template <class T> Digraph<T> to_digraph(Semilattice<T> s);
 template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2);
+template <class T> bool tree_is_isomorphic(Digraph<T> g1, Digraph<T> g2);
+
+extern template bool is_isomorphic<std::string>(Semilattice<std::string> s1,
+                                                Semilattice<std::string> s2);
+
+extern template bool is_isomorphic<int>(Semilattice<int> s1,
+                                        Semilattice<int> s2);
 
 #endif /* end of include guard: SEMIISO_H */

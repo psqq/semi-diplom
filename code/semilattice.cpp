@@ -1,6 +1,8 @@
 #include "exceptions.h"
 #include "semilattice.h"
 #include <algorithm>
+#include <iostream>
+#include <sstream>
 using namespace std;
 
 SimpleSemilattice::SimpleSemilattice(int new_n) { resize(new_n); }
@@ -55,7 +57,16 @@ void SimpleSemilattice::throw_exception_if_element_does_not_exist(int a) {
   }
 }
 
-template <class T> void Semilattice<T>::add_element(T a);
+template <class T> void Semilattice<T>::add_element(T a) {
+  if (is_element(a))
+    return;
+    int i = simple_semilattice.add_element();
+  id[a] = i;
+  name.push_back(a);
+  _elements.insert(a);
+}
+
+template <class T> std::set<T> Semilattice<T>::elements() { return _elements; }
 
 template <class T> bool Semilattice<T>::is_element(T a) {
   return _elements.find(a) != _elements.end();
@@ -65,18 +76,45 @@ template <class T> int Semilattice<T>::size() {
   return simple_semilattice.size();
 }
 
-template <class T> set<T> Semilattice<T>::elements() { return _elements; }
-
 template <class T> T Semilattice<T>::inf(T a, T b) {
   throw_exception_if_element_does_not_exist(a);
   throw_exception_if_element_does_not_exist(b);
-  return simple_semilattice.inf(id[a], id[b]);
+  return name[simple_semilattice.inf(id[a], id[b])];
 }
 
 template <class T>
-void Semilattice<T>::throw_exception_if_element_does_not_exist(int a) {
+void Semilattice<T>::throw_exception_if_element_does_not_exist(T a) {
   if (!is_element(a)) {
     throw GeneralException("Semilattice: Eleement does not exist.");
     // throw SimpleSemilatticeElementDoesNotExist(a);
   }
+}
+
+template <class T> void Semilattice<T>::load_from_stream(std::istream &is) {
+  vector<T> a;
+  T t;
+  set<T> elems;
+  while (!is.eof()) {
+    is >> t;
+    a.push_back(t);
+    elems.insert(t);
+  }
+  int n = sqrt(a.size() + 1e-5);
+  if (n * n != a.size()) {
+    throw GeneralException(
+        "Semilattice: load_from_stream: loaded matrix don't square!");
+  }
+  if (elems.size() != n) {
+    throw GeneralException(
+        "Semilattice: load_from_stream: elems.size() != n!");
+  }
+  _elements = elems;
+  for (T el:elems){
+    id[el] = simple_semilattice.add_element();
+  }
+}
+
+template <class T> void Semilattice<T>::from_string(std::string s) {
+  stringstream ss(s);
+  load_from_stream(ss);
 }

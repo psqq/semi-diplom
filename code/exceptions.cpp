@@ -12,10 +12,10 @@ SimpleDigraphException::SimpleDigraphException(SimpleDigraph *g,
                                                std::string amsg)
     : GeneralException(amsg) {}
 
-SimpleDigraphPathDontFoundException::SimpleDigraphPathDontFoundException(
-    SimpleDigraph *g, int from, int to) {
+template <class T>
+PathDontFoundException<T>::PathDontFoundException(T from, T to) {
   stringstream ss;
-  ss << "Dont fount path from node" << from << " to node " << to << ".";
+  ss << "Don't found path from node " << from << " to node " << to << ".";
   msg = ss.str();
 }
 

@@ -1,6 +1,4 @@
-#include "exceptions.h"
 #include "semiiso.h"
-#include <functional>
 #include <set>
 using namespace std;
 
@@ -8,19 +6,19 @@ template <class T> Digraph<T> to_digraph(Semilattice<T> s) {
   int n = s.size();
   auto elems = s.elements();
   T root = *begin(elems);
-  Digraph<T> g;
-  for (T el : elems) {
+  Digraph<T> g(n);
+  for (T &el : elems) {
     g.add_node(el);
     root = s.inf(root, el);
   }
   set<T> level = {root};
   while (level.size() > 0) {
     set<T> new_level;
-    for (T x : level) {
-      for (T y : elems) {
+    for (T &x : level) {
+      for (T &y : elems) {
         if (y != x && s.inf(x, y) == x) {
           bool flag = true;
-          for (T z : elems) {
+          for (T &z : elems) {
             if (z != x && z != y && x == s.inf(x, z) && z == s.inf(z, y)) {
               flag = false;
               break;
@@ -28,7 +26,7 @@ template <class T> Digraph<T> to_digraph(Semilattice<T> s) {
           }
           if (flag) {
             g.add_edge(x, y);
-            new_level.insert(y);
+            new_level.add(y);
           }
         }
       }
@@ -51,7 +49,7 @@ template <class T> T find_root(Digraph<T> g) {
   throw GeneralException("find_root: root don't found!");
 }
 
-template <class T> T inf_for_digraph(Digraph<T> g, T u, T v) {
+template <class T> inf_for_digraph(Digraph<T> g, T u, T v) {
   T root = find_root(g);
   int du = g.shortest_path_length(root, u);
   int dv = g.shortest_path_length(root, v);
@@ -99,7 +97,7 @@ template <class T> Semilattice<T> to_semi(Digraph<T> g) {
   s.add_elements(g.nodes());
   for (T &v : g.nodes()) {
     for (T &u : g.nodes()) {
-      s.set_inf(inf_for_digraph(g, v, u));
+    s.set_inf(inf_for_digraph(g, v, u);
     }
   }
   return s;
@@ -110,9 +108,9 @@ template <class T> string encode_tree(Digraph<T> g) {
     return "";
   }
   T root = find_root(g);
-  function<string(T)> go = [&](T v) -> string {
+  auto go = [&](T v) -> string {
     string s = "0";
-    for (T u : g.successors(v)) {
+    for (T &u : g.successors()) {
       s += go(u);
     }
     return s + "1";
@@ -120,7 +118,7 @@ template <class T> string encode_tree(Digraph<T> g) {
   return go(root);
 }
 
-template <class T> bool tree_is_isomorphic(Digraph<T> g1, Digraph<T> g2) {
+template <class T> tree_is_isomorphic(Digraph<T> g1, Digraph<T> g2) {
   return encode_tree(g1) == encode_tree(g2);
 }
 
@@ -141,8 +139,3 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
   }
   return false;
 }
-
-template bool is_isomorphic<std::string>(Semilattice<std::string> s1,
-                                         Semilattice<std::string> s2);
-
-template bool is_isomorphic<int>(Semilattice<int> s1, Semilattice<int> s2);
