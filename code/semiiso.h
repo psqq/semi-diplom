@@ -22,5 +22,6 @@ template <class T> std::set<T> find_cyclic_vers(Digraph<T> g);
 template <class T> Digraph<T> find_subgraph(Digraph<T> g, std::set<T> vers);
 template <class T>
 std::pair<Digraph<T>, Digraph<T>> find_G1_and_G2_graphs(Digraph<T> g);
+template <class T> T find_root(Digraph<T> g);
 
 #endif /* end of include guard: SEMIISO_H */

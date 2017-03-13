@@ -115,7 +115,7 @@ bool SimpleDigraph::is_tree_with_root(int root) {
   return true;
 }
 
-int SimpleDigraph::shortest_path_length(int u, int v) {
+int SimpleDigraph::shortest_path_length(int u, int v, bool undirected) {
   queue<pair<int, int>> q;
   vector<bool> used(n);
   q.emplace(u, 0);
@@ -127,12 +127,16 @@ int SimpleDigraph::shortest_path_length(int u, int v) {
     if (w == v)
       return d;
     for (int i = 0; i < n; i++) {
-      if (adj_matrix[w][i] && !used[i]) {
+      if ((adj_matrix[w][i] || (undirected && adj_matrix[i][w])) && !used[i]) {
         q.emplace(i, d + 1);
       }
     }
   }
   throw PathDontFoundException<int>(u, v);
+}
+
+int SimpleDigraph::shortest_path_length(int u, int v) {
+  return shortest_path_length(u, v, false);
 }
 
 template <class T> Digraph<T>::Digraph() {}
@@ -231,14 +235,20 @@ template <class T> bool Digraph<T>::is_tree_with_root(T root) {
   return simple_digraph.is_tree_with_root(id[root]);
 }
 
-template <class T> int Digraph<T>::shortest_path_length(T u, T v) {
+template <class T>
+int Digraph<T>::shortest_path_length(T u, T v, bool undirected) {
   if (!is_node(u) || !is_node(v))
     throw PathDontFoundException<T>(u, v);
   try {
-    return simple_digraph.shortest_path_length(id[u], id[v]);
+    return simple_digraph.shortest_path_length(id[u], id[v], undirected);
   } catch (PathDontFoundException<int> &e) {
     throw PathDontFoundException<T>(u, v);
   }
+}
+
+template <class T>
+int Digraph<T>::shortest_path_length(T u, T v) {
+  return shortest_path_length(u, v, false);
 }
 
 template <class T> void Digraph<T>::add_edges(vector<pair<T, T>> edges) {

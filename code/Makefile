@@ -1,7 +1,7 @@
 
 BIN = semi
 SRCS = main.cpp digraph.cpp exceptions.cpp semiiso.cpp semilattice.cpp \
-	matrix.cpp digraphiso.cpp
+	matrix.cpp digraphiso.cpp inv3.cpp
 OBJS := $(SRCS:.cpp=.o)
 CFLAGS = --std=c++14 -g -pipe
 LINK_FLAGS = -pipe

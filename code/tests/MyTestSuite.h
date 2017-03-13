@@ -4,6 +4,7 @@
 #include "exceptions.h"
 #include "semiiso.h"
 #include "semilattice.h"
+#include "inv3.h"
 #include <cstdlib>
 #include <set>
 using namespace std;
@@ -155,6 +156,11 @@ public:
       g3.add_node(i);
     TS_ASSERT_EQUALS(g3.number_of_nodes(), n);
     TS_ASSERT_EQUALS(g3.number_of_edges(), 0);
+  }
+
+  void test_Digraph_get_nodes_of_empty_graph() {
+    Digraph<int> g;
+    TS_ASSERT_EQUALS(g.nodes(), set<int>());
   }
 
   void test_Digraph_from_string() {
@@ -652,5 +658,27 @@ public:
     DigraphIso<int, int> digiso(g1, g2);
     digiso.set_initial_biection({{0, 123}});
     TS_ASSERT(!digiso.is_iso());
+  }
+
+  //----------------------------------------------------------------------------
+  // INV3 TESTS
+  //----------------------------------------------------------------------------
+  void test_Inv3_full_inv3() {
+    Digraph<int> g;
+    Inv3<int> inv3;
+    string full;
+    g.add_node(0);
+    TS_ASSERT_EQUALS(g.number_of_nodes(), 1);
+    inv3 = Inv3<int>(g);
+    // cout << endl << g.nodes() << endl;
+    full = inv3.get_full_inv3();
+    // cout << endl << "full_inv3: '" << full << "'" << endl;
+    TS_ASSERT_EQUALS(full, "0, 0, 0, (0); ");
+    TS_ASSERT_EQUALS(inv3.get_inv3_for_node(0), "0, 0, 0, (0)");
+    // g = Digraph<int>::from_string(R"(
+    //   0 1
+    //   0 2
+    //   0 3
+    // )");
   }
 };

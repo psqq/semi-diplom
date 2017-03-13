@@ -1,6 +1,7 @@
 #include "digraphiso.h"
 #include "exceptions.h"
 #include "semiiso.h"
+#include "inv3.h"
 #include <algorithm>
 #include <functional>
 #include <iostream>
@@ -241,7 +242,11 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
   if (!tree_is_isomorphic(g1_G1, g2_G1) || !tree_is_isomorphic(g1_G2, g2_G2)) {
     return false;
   }
-  DigraphIso<T, T> digiso(g1, g2);
+  Inv3<T> inv3_for_g1_G2(g1_G2);
+  Inv3<T> inv3_for_g2_G2(g2_G2);
+  DigraphIso<T, T> digiso(g1_G2, g2_G2, [&](T v, T u) {
+    return inv3_for_g1_G2.get_inv3_for_node(v) == inv3_for_g2_G2.get_inv3_for_node(u);
+  });
   // digiso.set_initial_biection({{r1, r2}});
   return digiso.is_iso();
 }
