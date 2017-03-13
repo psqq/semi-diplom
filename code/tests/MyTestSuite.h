@@ -218,11 +218,15 @@ public:
   }
 
   //----------------------------------------------------------------------------
-  // SIMPLE SEMILATTICE DIGRAPH TESTS
+  // SIMPLE SEMILATTICE TESTS
   //----------------------------------------------------------------------------
+  void test_SimpleSemilattice_Constructor() {
+    SimpleSemilattice s(5);
+    TS_ASSERT(s.is_valid());
+  }
 
   //----------------------------------------------------------------------------
-  // SEMILATTICE<T> DIGRAPH TESTS
+  // SEMILATTICE<T> TESTS
   //----------------------------------------------------------------------------
   void test_Semilattice_from_string() {
     Semilattice<int> s1;
@@ -261,26 +265,83 @@ public:
   // SEMIISO MODULE TESTS
   //----------------------------------------------------------------------------
   void test_FUNCTION_to_digraph() {
-    
+    Semilattice<int> s1;
+    s1.from_string(R"(
+      0 0
+      0 1
+    )");
+    Digraph<int> g1 = to_digraph(s1);
+    TS_ASSERT_EQUALS(g1.number_of_nodes(), 2);
+    TS_ASSERT_EQUALS(g1.number_of_edges(), 1);
+    TS_ASSERT(g1.is_edge(0, 1));
+    TS_ASSERT(!g1.is_edge(1, 0));
+  }
+
+  void test_FUNCTION_inf_for_digraph() {
+    Semilattice<int> s1;
+    s1.from_string(R"(
+      0 0 0 0
+      0 1 1 1
+      0 1 2 1
+      0 1 1 3
+    )");
+    TS_ASSERT(s1.is_valid());
+    Digraph<int> g1 = to_digraph(s1);
+    TS_ASSERT_EQUALS(g1.number_of_nodes(), 4);
+    TS_ASSERT_EQUALS(g1.number_of_edges(), 3);
+    int n = s1.size();
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        TS_ASSERT_EQUALS(inf_for_digraph(g1, i, j), s1.inf(i, j));
+      }
+    }
+  }
+
+  void test_FUNCTION_to_semi() {
+    Digraph<int> g1;
+    g1.add_edges({{0, 1}, {1, 2}, {1, 3}});
+    Semilattice<int> s1 = to_semi(g1);
+    TS_ASSERT(s1.is_valid());
+    TS_ASSERT_EQUALS(s1.size(), 4);
+    int n = g1.number_of_nodes();
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        TS_ASSERT_EQUALS(inf_for_digraph(g1, i, j), s1.inf(i, j));
+      }
+    }
+  }
+
+  void test_FUNCTION_tree_is_isomorphic() {
+    Digraph<int> g1, g2;
+    g1.add_edges({{0, 1}, {1, 2}, {1, 3}});
+    g2.add_edges({{7, 19}, {19, 101}, {19, 1}});
+    TS_ASSERT(tree_is_isomorphic(g1, g2));
+    Digraph<int> g3, g4;
+    g3.add_edges({{0, 1}, {1, 2}, {1, 3}, {2, 5}});
+    g4.add_edges({{7, 19}, {19, 101}, {19, 1}, {19, 200}});
+    TS_ASSERT(!tree_is_isomorphic(g3, g4));
   }
 
   void test_FUNCTION_is_isomorphic_for_Semilattices() {
     Semilattice<string> s1, s2;
     s1.from_string("0");
     s2.from_string("a");
-    // TS_ASSERT(is_isomorphic(s1, s1));
-    // TS_ASSERT(is_isomorphic(s2, s2));
-    // TS_ASSERT(is_isomorphic(s1, s2));
-    // TS_ASSERT(is_isomorphic(s2, s1));
-    // s1.from_string(R"(
-    //   0 0
-    //   0 1
-    // )");
-    // s2.from_string(R"(
-    //   0 1
-    //   1 1
-    // )");
-    // TS_ASSERT(is_isomorphic(s1, s1));
-    // TS_ASSERT(is_isomorphic(s1, s2));
+    TS_ASSERT(is_isomorphic(s1, s1));
+    TS_ASSERT(is_isomorphic(s2, s2));
+    TS_ASSERT(is_isomorphic(s1, s2));
+    TS_ASSERT(is_isomorphic(s2, s1));
+    Semilattice<string> s3, s4;
+    s3.from_string(R"(
+      0 0
+      0 1
+    )");
+    s4.from_string(R"(
+      0 1
+      1 1
+    )");
+    TS_ASSERT(is_isomorphic(s3, s3));
+    TS_ASSERT(is_isomorphic(s3, s4));
+    TS_ASSERT(is_isomorphic(s4, s3));
+    TS_ASSERT(is_isomorphic(s4, s4));
   }
 };

@@ -12,7 +12,6 @@ void SimpleSemilattice::resize(int new_n) {
     throw WrongSizeException(
         "SimpleSemilattice: The size can not be negative!");
   }
-  n = new_n;
   if (new_n > max_n) {
     int new_max_n = max(max_n + BUFFER_INCREASE, new_n);
     if (new_max_n > buffer_limit) {
@@ -23,14 +22,18 @@ void SimpleSemilattice::resize(int new_n) {
   }
   if (op.size() != max_n) {
     op.resize(max_n);
-    for (int i = 0; i < max_n; i++)
+    for (int i = 0; i < max_n; i++) {
       op[i].resize(max_n);
+      if (i >= n) {
+        op[i][i] = i;
+      }
+    }
   }
+  n = new_n;
 }
 
 int SimpleSemilattice::add_element() {
-  n++;
-  resize(n);
+  resize(++n);
   return n - 1;
 }
 
@@ -56,6 +59,42 @@ void SimpleSemilattice::throw_exception_if_element_does_not_exist(int a) {
     throw GeneralException("SimpleSemilattice: Eleement does not exist.");
     // throw SimpleSemilatticeElementDoesNotExist(a);
   }
+}
+
+bool SimpleSemilattice::is_valid() {
+  return is_associative() && is_commutativity() && is_idempotence();
+}
+
+bool SimpleSemilattice::is_associative() {
+  for (int x = 0; x < n; x++) {
+    for (int y = 0; y < n; y++) {
+      for (int z = 0; z < n; z++) {
+        if (op[x][op[y][z]] != op[op[x][y]][z]) {
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+}
+
+bool SimpleSemilattice::is_commutativity() {
+  for (int x = 0; x < n; x++) {
+    for (int y = 0; y < n; y++) {
+      if (op[x][y] != op[y][x]) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool SimpleSemilattice::is_idempotence() {
+  for (int x = 0; x < n; x++) {
+    if (op[x][x] != x)
+      return false;
+  }
+  return true;
 }
 
 template <class T> void Semilattice<T>::add_element(T a) {
@@ -140,4 +179,20 @@ template <class T> void Semilattice<T>::load_from_stream(std::istream &is) {
 template <class T> void Semilattice<T>::from_string(std::string s) {
   stringstream ss(s);
   load_from_stream(ss);
+}
+
+template <class T> bool Semilattice<T>::is_valid() {
+  return simple_semilattice.is_valid();
+}
+
+template <class T> bool Semilattice<T>::is_associative() {
+  return simple_semilattice.is_associative();
+}
+
+template <class T> bool Semilattice<T>::is_commutativity() {
+  return simple_semilattice.is_commutativity();
+}
+
+template <class T> bool Semilattice<T>::is_idempotence() {
+  return simple_semilattice.is_idempotence();
 }

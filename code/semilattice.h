@@ -1,9 +1,9 @@
 #ifndef SEMILATTICE_H
 #define SEMILATTICE_H
 
-#include <unordered_map>
 #include <map>
 #include <set>
+#include <unordered_map>
 #include <vector>
 
 class SimpleSemilattice {
@@ -37,12 +37,21 @@ public:
   void load_from_stream(std::istream &is);
   void from_string(std::string s);
   void add_element(T a);
+  template <class U> void add_elements(U elems) {
+    for (T el : elems) {
+      add_element(el);
+    }
+  }
   bool is_element(T a);
   int size();
   std::set<T> elements();
   T inf(T a, T b);
   void set_inf(T a, T b, T c);
   void throw_exception_if_element_does_not_exist(T a);
+  bool is_valid();
+  bool is_associative();
+  bool is_commutativity();
+  bool is_idempotence();
 };
 
 template class Semilattice<std::string>;

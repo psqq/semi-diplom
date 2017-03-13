@@ -1,7 +1,9 @@
 #include "exceptions.h"
 #include "semiiso.h"
+#include <algorithm>
 #include <functional>
 #include <set>
+#include <iostream>
 using namespace std;
 
 template <class T> Digraph<T> to_digraph(Semilattice<T> s) {
@@ -33,6 +35,7 @@ template <class T> Digraph<T> to_digraph(Semilattice<T> s) {
         }
       }
     }
+    level = new_level;
   }
   return g;
 }
@@ -51,6 +54,9 @@ template <class T> T find_root(Digraph<T> g) {
   throw GeneralException("find_root: root don't found!");
 }
 
+template int inf_for_digraph(Digraph<int> g, int u, int v);
+template string inf_for_digraph(Digraph<string> g, string u, string v);
+
 template <class T> T inf_for_digraph(Digraph<T> g, T u, T v) {
   T root = find_root(g);
   int du = g.shortest_path_length(root, u);
@@ -58,9 +64,9 @@ template <class T> T inf_for_digraph(Digraph<T> g, T u, T v) {
   set<T> us = {u}, vs = {v};
   bool flag = false;
   while (1) {
-    while (len(us) > 0 && (flag || du > dv)) {
+    while (us.size() > 0 && (flag || du > dv)) {
       set<T> new_us;
-      for (T &x : us) {
+      for (T x : us) {
         auto p = g.predecessors(x);
         new_us.insert(begin(p), end(p));
       }
@@ -68,9 +74,9 @@ template <class T> T inf_for_digraph(Digraph<T> g, T u, T v) {
       du--;
       flag = false;
     }
-    while (len(vs) > 0 && dv > du) {
+    while (vs.size() > 0 && dv > du) {
       set<T> new_vs;
-      for (T &x : vs) {
+      for (T x : vs) {
         auto p = g.predecessors(x);
         new_vs.insert(begin(p), end(p));
       }
@@ -78,7 +84,7 @@ template <class T> T inf_for_digraph(Digraph<T> g, T u, T v) {
       dv--;
       flag = false;
     }
-    if (len(vs) == 0 || len(us) == 0) {
+    if (vs.size() == 0 || us.size() == 0) {
       throw GeneralException("inf_for_digraph: inf don't found!");
     }
     set<T> uv_intersection;
@@ -94,12 +100,15 @@ template <class T> T inf_for_digraph(Digraph<T> g, T u, T v) {
   }
 }
 
+template Semilattice<int> to_semi<int>(Digraph<int> g);
+template Semilattice<string> to_semi<string>(Digraph<string> g);
+
 template <class T> Semilattice<T> to_semi(Digraph<T> g) {
   Semilattice<T> s;
   s.add_elements(g.nodes());
-  for (T &v : g.nodes()) {
-    for (T &u : g.nodes()) {
-      s.set_inf(inf_for_digraph(g, v, u));
+  for (T v : g.nodes()) {
+    for (T u : g.nodes()) {
+      s.set_inf(v, u, inf_for_digraph(g, v, u));
     }
   }
   return s;
@@ -121,8 +130,16 @@ template <class T> string encode_tree(Digraph<T> g) {
 }
 
 template <class T> bool tree_is_isomorphic(Digraph<T> g1, Digraph<T> g2) {
-  return encode_tree(g1) == encode_tree(g2);
+  string s1 = encode_tree(g1);
+  string s2 = encode_tree(g2);
+  // cout << endl << s1 << endl << s2 << endl;
+  return s1 == s2;
 }
+
+template bool is_isomorphic<string>(Semilattice<string> s1,
+                                    Semilattice<string> s2);
+
+template bool is_isomorphic<int>(Semilattice<int> s1, Semilattice<int> s2);
 
 template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
   Digraph<T> g1 = to_digraph(s1), g2 = to_digraph(s1);
@@ -137,12 +154,7 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
     return false;
   }
   if (g1_is_tree) {
-    tree_is_isomorphic(g1, g2);
+    return tree_is_isomorphic(g1, g2);
   }
   return false;
 }
-
-template bool is_isomorphic<std::string>(Semilattice<std::string> s1,
-                                         Semilattice<std::string> s2);
-
-template bool is_isomorphic<int>(Semilattice<int> s1, Semilattice<int> s2);

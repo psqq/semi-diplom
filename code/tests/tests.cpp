@@ -106,21 +106,45 @@ public:
  void runTest() { suite_MyTestSuite.test_Digraph_METHODS_is_tree_with_root(); }
 } testDescription_suite_MyTestSuite_test_Digraph_METHODS_is_tree_with_root;
 
+static class TestDescription_suite_MyTestSuite_test_SimpleSemilattice_Constructor : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_MyTestSuite_test_SimpleSemilattice_Constructor() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 223, "test_SimpleSemilattice_Constructor" ) {}
+ void runTest() { suite_MyTestSuite.test_SimpleSemilattice_Constructor(); }
+} testDescription_suite_MyTestSuite_test_SimpleSemilattice_Constructor;
+
 static class TestDescription_suite_MyTestSuite_test_Semilattice_from_string : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_MyTestSuite_test_Semilattice_from_string() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 227, "test_Semilattice_from_string" ) {}
+ TestDescription_suite_MyTestSuite_test_Semilattice_from_string() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 231, "test_Semilattice_from_string" ) {}
  void runTest() { suite_MyTestSuite.test_Semilattice_from_string(); }
 } testDescription_suite_MyTestSuite_test_Semilattice_from_string;
 
-static class TestDescription_suite_MyTestSuite_test_FUNCTION_ : public CxxTest::RealTestDescription {
+static class TestDescription_suite_MyTestSuite_test_FUNCTION_to_digraph : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_MyTestSuite_test_FUNCTION_() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 263, "test_FUNCTION_" ) {}
- void runTest() { suite_MyTestSuite.test_FUNCTION_(); }
-} testDescription_suite_MyTestSuite_test_FUNCTION_;
+ TestDescription_suite_MyTestSuite_test_FUNCTION_to_digraph() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 267, "test_FUNCTION_to_digraph" ) {}
+ void runTest() { suite_MyTestSuite.test_FUNCTION_to_digraph(); }
+} testDescription_suite_MyTestSuite_test_FUNCTION_to_digraph;
+
+static class TestDescription_suite_MyTestSuite_test_FUNCTION_inf_for_digraph : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_MyTestSuite_test_FUNCTION_inf_for_digraph() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 280, "test_FUNCTION_inf_for_digraph" ) {}
+ void runTest() { suite_MyTestSuite.test_FUNCTION_inf_for_digraph(); }
+} testDescription_suite_MyTestSuite_test_FUNCTION_inf_for_digraph;
+
+static class TestDescription_suite_MyTestSuite_test_FUNCTION_to_semi : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_MyTestSuite_test_FUNCTION_to_semi() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 300, "test_FUNCTION_to_semi" ) {}
+ void runTest() { suite_MyTestSuite.test_FUNCTION_to_semi(); }
+} testDescription_suite_MyTestSuite_test_FUNCTION_to_semi;
+
+static class TestDescription_suite_MyTestSuite_test_FUNCTION_tree_is_isomorphic : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_MyTestSuite_test_FUNCTION_tree_is_isomorphic() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 314, "test_FUNCTION_tree_is_isomorphic" ) {}
+ void runTest() { suite_MyTestSuite.test_FUNCTION_tree_is_isomorphic(); }
+} testDescription_suite_MyTestSuite_test_FUNCTION_tree_is_isomorphic;
 
 static class TestDescription_suite_MyTestSuite_test_FUNCTION_is_isomorphic_for_Semilattices : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_MyTestSuite_test_FUNCTION_is_isomorphic_for_Semilattices() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 265, "test_FUNCTION_is_isomorphic_for_Semilattices" ) {}
+ TestDescription_suite_MyTestSuite_test_FUNCTION_is_isomorphic_for_Semilattices() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 325, "test_FUNCTION_is_isomorphic_for_Semilattices" ) {}
  void runTest() { suite_MyTestSuite.test_FUNCTION_is_isomorphic_for_Semilattices(); }
 } testDescription_suite_MyTestSuite_test_FUNCTION_is_isomorphic_for_Semilattices;
 
