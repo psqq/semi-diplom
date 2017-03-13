@@ -52,11 +52,16 @@ template <class T, class U> void DigraphIso<T, U>::go() {
       return;
     if (match(v)) {
       // cout << g1_k << " match " << v << endl;
-      f[g1_k] = v;
-      f2[orig_g1.get_name_by_id(g1_k)] = orig_g2.get_name_by_id(v);
-      g2_s.insert(v);
-      go();
-      g2_s.erase(v);
+      auto g1_k_name = orig_g1.get_name_by_id(g1_k);
+      auto v_name = orig_g2.get_name_by_id(v);
+      auto it = initial_bijection.find(g1_k_name);
+      if (!(it != initial_bijection.end() && it->second != v_name)) {
+        f[g1_k] = v;
+        f2[g1_k_name] = v_name;
+        g2_s.insert(v);
+        go();
+        g2_s.erase(v);
+      }
     } else {
       // cout << g1_k << " don't match " << v << endl;
     }
@@ -71,11 +76,13 @@ template <class T, class U> bool DigraphIso<T, U>::is_iso() {
     return false;
   }
   n = g1.number_of_nodes();
+  if (n == 0) {
+    return true;
+  }
   f.resize(n);
   for (int i = 0; i < n; i++)
     vertices.insert(i);
   go();
-
   // cout << "ans " << ans << endl;
   if (ans < 0)
     ans = 0;

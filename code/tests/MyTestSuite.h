@@ -8,6 +8,26 @@
 #include <set>
 using namespace std;
 
+template <class T> ostream &operator<<(ostream &os, set<T> s);
+
+template <class T> ostream &operator<<(ostream &os, vector<T> s) {
+  os << "[ ";
+  for (T x : s) {
+    os << x << " ";
+  }
+  os << "]";
+  return os;
+}
+
+template <class T> ostream &operator<<(ostream &os, set<T> s) {
+  os << "{ ";
+  for (T x : s) {
+    os << x << " ";
+  }
+  os << "}";
+  return os;
+}
+
 class MyTestSuite : public CxxTest::TestSuite {
 public:
   //----------------------------------------------------------------------------
@@ -364,19 +384,121 @@ public:
     TS_ASSERT(is_isomorphic(s4, s4));
   }
 
-  // void test_FUNCTION_is_isomorphic_FOR_NON_TREE_Semilattices() {
-  //   Semilattice<int> s1, s2;
-  //   s1.from_string(R"(
-  //     0 0 0 0
-  //     0 1 0 1
-  //     0 0 2 2
-  //     0 1 2 3
-  //   )");
-  //   Digraph<int> g1;
-  //   g1.add_edges({{0, 1}, {0, 2}, {1, 3}, {2, 3}});
-  //   s2 = to_semi(g1);
-  //   TS_ASSERT(is_isomorphic(s1, s2));
-  // }
+  void test_FUNCTION_is_isomorphic_FOR_NON_TREE_Semilattices() {
+    Semilattice<int> s1, s2;
+    s1.from_string(R"(
+      0 0 0 0
+      0 1 0 1
+      0 0 2 2
+      0 1 2 3
+    )");
+    Digraph<int> g1;
+    g1 = Digraph<int>::from_string(R"(
+      12 1 5
+      12 100 5
+    )");
+    s2 = to_semi(g1);
+    TS_ASSERT(is_isomorphic(s1, s2));
+  }
+
+  void test_FUNCTION_find_branches_of_digraph() {
+    Digraph<int> g;
+    vector<set<int>> branches;
+    set<set<int>> set_of_branches, result;
+    g = Digraph<int>::from_string(R"(
+      0 1
+      0 2
+      0 3
+    )");
+    branches = find_branches_of_digraph(g);
+    set_of_branches = set<set<int>>(branches.begin(), branches.end());
+    result = {{0, 1}, {0, 2}, {0, 3}};
+    // cout << endl << branches << endl;
+    // cout << set_of_branches << endl;
+    // cout << result << endl;
+    TS_ASSERT(set_of_branches == result);
+    g = Digraph<int>::from_string(R"(
+      0 1 4 6
+      0 2 4 7
+      0 3 5 8
+    )");
+    branches = find_branches_of_digraph(g);
+    set_of_branches = set<set<int>>(branches.begin(), branches.end());
+    result = {{0, 1, 2, 4, 6, 7}, {0, 3, 5, 8}};
+    // cout << endl << branches << endl;
+    // cout << set_of_branches << endl;
+    // cout << result << endl;
+    TS_ASSERT(set_of_branches == result);
+  }
+
+  void test_FUNCTION_find_cyclic_vers() {
+    Digraph<int> g;
+    set<int> cyclic_vers, result;
+    g = Digraph<int>::from_string(R"(
+      0 1
+      0 2
+      0 3
+    )");
+    cyclic_vers = find_cyclic_vers(g);
+    result = {};
+    TS_ASSERT(cyclic_vers == result);
+    g = Digraph<int>::from_string(R"(
+        0 1 4 6
+        0 2 4 7
+        0 3 5 8
+    )");
+    cyclic_vers = find_cyclic_vers(g);
+    result = {4};
+    TS_ASSERT(cyclic_vers == result);
+  }
+
+  void test_FUNCTION_find_subgraph() {
+    Digraph<int> g, g2;
+    g = Digraph<int>::from_string(R"(
+      0 1
+      0 2
+      0 3
+    )");
+    g2 = find_subgraph(g, {0, 3});
+    TS_ASSERT_EQUALS(g2.number_of_nodes(), 2);
+    TS_ASSERT_EQUALS(g2.number_of_edges(), 1);
+    TS_ASSERT(g2.is_edge(0, 3));
+    g = Digraph<int>::from_string(R"(
+        0 1 4 6
+        0 2 4 7
+        0 3 5 8
+    )");
+    g2 = find_subgraph(g, {0, 1, 2, 4, 7});
+    TS_ASSERT_EQUALS(g2.number_of_nodes(), 5);
+    TS_ASSERT_EQUALS(g2.number_of_edges(), 5);
+    TS_ASSERT(g2.is_edge(4, 7));
+    TS_ASSERT(g2.is_edge(0, 1));
+    TS_ASSERT(g2.is_edge(2, 4));
+  }
+
+  void test_FUNCTION_find_G1_and_G2_graphsh() {
+    Digraph<int> g, g1, g2;
+    g = Digraph<int>::from_string(R"(
+      0 1
+      0 2
+      0 3
+    )");
+    tie(g1, g2) = find_G1_and_G2_graphs(g);
+    TS_ASSERT_EQUALS(g1.number_of_nodes(), 4);
+    TS_ASSERT_EQUALS(g2.number_of_edges(), 0);
+    TS_ASSERT_EQUALS(g1.nodes(), set<int>({0, 1, 2, 3}));
+    g = Digraph<int>::from_string(R"(
+        0 1 4 6
+        0 2 4 7
+        0 3 5 8
+        0 9
+    )");
+    tie(g1, g2) = find_G1_and_G2_graphs(g);
+    TS_ASSERT_EQUALS(g1.number_of_nodes(), 5);
+    TS_ASSERT_EQUALS(g2.number_of_edges(), 6);
+    TS_ASSERT_EQUALS(g1.nodes(), set<int>({0, 9, 3, 5, 8}));
+    TS_ASSERT_EQUALS(g2.nodes(), set<int>({0, 1, 2, 4, 6, 7}));
+  }
 
   //----------------------------------------------------------------------------
   // DIGRAPHISO MODULE TESTS
@@ -474,6 +596,61 @@ public:
       11 800
     )");
     DigraphIso<int, int> digiso(g1, g2);
+    TS_ASSERT(!digiso.is_iso());
+  }
+
+  void test_DigraphIso_hard_test_2() {
+    Digraph<int> g1, g2;
+    g1 = Digraph<int>::from_string(R"(
+      0 1 4 7 10
+      0 2 4 8 10
+      2 5 9 10
+      0 3 6 9 10
+    )");
+    g2 = Digraph<int>::from_string(R"(
+      0 1 4 7 10
+      0 2 5 8 10
+      0 3 5 9 10
+      3 6 9
+    )");
+    DigraphIso<int, int> digiso(g1, g2);
+    TS_ASSERT(!digiso.is_iso());
+  }
+
+  void test_DigraphIso_FOR_initial_biection_1() {
+    Digraph<int> g1, g2;
+    g1 = Digraph<int>::from_string(R"(
+      0 1
+      0 2
+      0 3
+    )");
+    g2 = Digraph<int>::from_string(R"(
+      1 100
+      1 200
+      1 123
+    )");
+    DigraphIso<int, int> digiso(g1, g2);
+    digiso.set_initial_biection({{3, 100}, {2, 123}});
+    TS_ASSERT(digiso.is_iso());
+    map<int, int> biection = digiso.get_biection();
+    TS_ASSERT_EQUALS(biection[3], 100);
+    TS_ASSERT_EQUALS(biection[2], 123);
+  }
+
+  void test_DigraphIso_FOR_initial_biection_2() {
+    Digraph<int> g1, g2;
+    g1 = Digraph<int>::from_string(R"(
+      0 1
+      0 2
+      0 3
+    )");
+    g2 = Digraph<int>::from_string(R"(
+      1 100
+      1 200
+      1 123
+    )");
+    DigraphIso<int, int> digiso(g1, g2);
+    digiso.set_initial_biection({{0, 123}});
     TS_ASSERT(!digiso.is_iso());
   }
 };

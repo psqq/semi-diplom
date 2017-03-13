@@ -1,4 +1,4 @@
-BINS = 1
+BINS = 1 2
 
 all: $(BINS) run
 
@@ -6,4 +6,4 @@ all: $(BINS) run
 	g++ -o $@ --std=c++14 $<
 
 run:
-	./1
+	./2

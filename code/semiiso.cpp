@@ -1,13 +1,15 @@
+#include "digraphiso.h"
 #include "exceptions.h"
 #include "semiiso.h"
 #include <algorithm>
 #include <functional>
-#include <set>
 #include <iostream>
+#include <set>
+#include <tuple>
 using namespace std;
 
 template <class T> Digraph<T> to_digraph(Semilattice<T> s) {
-  int n = s.size();
+  // int n = s.size();
   auto elems = s.elements();
   T root = *begin(elems);
   Digraph<T> g;
@@ -136,6 +138,83 @@ template <class T> bool tree_is_isomorphic(Digraph<T> g1, Digraph<T> g2) {
   return s1 == s2;
 }
 
+template <class T> vector<set<T>> find_branches_of_digraph(Digraph<T> g) {
+  vector<set<T>> branches;
+  T root = find_root(g);
+  function<set<T>(T)> vertexes_of_subgraph_with_root = [&](T v) {
+    set<T> t = {v}, t2;
+    for (T u : g.successors(v)) {
+      t2 = vertexes_of_subgraph_with_root(u);
+      t.insert(t2.begin(), t2.end());
+    }
+    return t;
+  };
+  for (T v : g.successors(root)) {
+    auto t = vertexes_of_subgraph_with_root(v);
+    vector<set<T>> new_branches;
+    for (auto b : branches) {
+      set<T> intersection_t_and_b;
+      set_intersection(
+          begin(t), end(t), begin(b), end(b),
+          inserter(intersection_t_and_b, intersection_t_and_b.begin()));
+      if (intersection_t_and_b.size() > 0) {
+        t.insert(begin(b), end(b));
+      } else {
+        new_branches.push_back(b);
+      }
+    }
+    new_branches.push_back(t);
+    branches = new_branches;
+  }
+  for (auto &b : branches) {
+    b.insert(root);
+  }
+  return branches;
+}
+
+template <class T> set<T> find_cyclic_vers(Digraph<T> g) {
+  set<T> res;
+  for (T v : g.nodes()) {
+    if (g.predecessors(v).size() > 1) {
+      res.insert(v);
+    }
+  }
+  return res;
+}
+
+template <class T> Digraph<T> find_subgraph(Digraph<T> g, set<T> vers) {
+  Digraph<T> subg;
+  for (T u : vers) {
+    subg.add_node(u);
+    for (T v : vers) {
+      if (g.is_edge(u, v)) {
+        subg.add_edge(u, v);
+      }
+    }
+  }
+  return subg;
+}
+
+template <class T>
+pair<Digraph<T>, Digraph<T>> find_G1_and_G2_graphs(Digraph<T> g) {
+  auto branches = find_branches_of_digraph(g);
+  auto cyclic_vers = find_cyclic_vers(g);
+  set<T> G1_vers, G2_vers;
+  for (auto b : branches) {
+    set<T> t;
+    set_intersection(begin(cyclic_vers), end(cyclic_vers), begin(b), end(b),
+                     inserter(t, t.begin()));
+    if (t.size() > 0) {
+      G2_vers.insert(b.begin(), b.end());
+    } else {
+      G1_vers.insert(b.begin(), b.end());
+    }
+  }
+  Digraph<T> G1 = find_subgraph(g, G1_vers);
+  Digraph<T> G2 = find_subgraph(g, G2_vers);
+  return {G1, G2};
+}
+
 template bool is_isomorphic<string>(Semilattice<string> s1,
                                     Semilattice<string> s2);
 
@@ -156,7 +235,13 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
   if (g1_is_tree) {
     return tree_is_isomorphic(g1, g2);
   }
-  // DigraphIso<T> digiso(g1, g2);
-  // return digiso.is_iso();
-  return false;
+  Digraph<T> g1_G1, g1_G2, g2_G1, g2_G2;
+  tie(g1_G1, g1_G2) = find_G1_and_G2_graphs(g1);
+  tie(g2_G1, g2_G2) = find_G1_and_G2_graphs(g2);
+  if (!tree_is_isomorphic(g1_G1, g2_G1) || !tree_is_isomorphic(g1_G2, g2_G2)) {
+    return false;
+  }
+  DigraphIso<T, T> digiso(g1, g2);
+  // digiso.set_initial_biection({{r1, r2}});
+  return digiso.is_iso();
 }
