@@ -4,3 +4,4 @@ exceptions.o: exceptions.cpp digraph.h exceptions.h semilattice.h
 semiiso.o: semiiso.cpp exceptions.h semiiso.h digraph.h semilattice.h
 semilattice.o: semilattice.cpp exceptions.h semilattice.h
 matrix.o: matrix.cpp matrix.h
+digraphiso.o: digraphiso.cpp digraphiso.h digraph.h exceptions.h

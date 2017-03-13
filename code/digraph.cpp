@@ -159,11 +159,11 @@ template <class T> void Digraph<T>::add_edge(T u, T v) {
   simple_digraph.add_edge(id[u], id[v]);
 }
 
-template <class T> void Digraph<T>::load_from_stream(std::istream &is) {
-  string line;
-  getline(is, line);
+template <class T> Digraph<T> Digraph<T>::from_stream(std::istream &is) {
+  Digraph<T> g;
   int line_number = 1;
   while (!is.eof()) {
+    string line;
     getline(is, line);
     line_number++;
     if (line.empty())
@@ -172,20 +172,21 @@ template <class T> void Digraph<T>::load_from_stream(std::istream &is) {
     T u, v;
     iss >> u;
     while (iss >> v) {
-      add_edge(u, v);
+      g.add_edge(u, v);
       u = v;
     }
   }
+  return g;
 }
 
-template <class T> void Digraph<T>::from_string(std::string str) {
+template <class T> Digraph<T> Digraph<T>::from_string(std::string str) {
   stringstream ss(str);
-  load_from_stream(ss);
+  return Digraph<T>::from_stream(ss);
 }
 
-template <class T> void Digraph<T>::load_from_file(std::string filename) {
+template <class T> Digraph<T> Digraph<T>::from_file(std::string filename) {
   ifstream f(filename);
-  load_from_stream(f);
+  return Digraph<T>::from_stream(f);
 }
 
 template <class T> bool Digraph<T>::is_edge(T u, T v) {

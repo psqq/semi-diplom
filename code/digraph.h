@@ -5,6 +5,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include "exceptions.h"
 
 class SimpleDigraph {
   static const int BUFFER_INCREASE = 100;
@@ -44,9 +45,6 @@ public:
   void add_edge(T u, T v);
   bool is_edge(T u, T v);
   void add_edges(std::vector<std::pair<T, T>> edges);
-  void load_from_stream(std::istream &is);
-  void from_string(std::string str);
-  void load_from_file(std::string filename);
   std::vector<T> successors(T v);
   std::vector<T> predecessors(T v);
   int number_of_nodes();
@@ -54,6 +52,15 @@ public:
   bool is_tree_with_root(T root);
   int shortest_path_length(T u, T v);
   SimpleDigraph get_simple_digraph() { return simple_digraph; }
+  T get_name_by_id(int aid) {
+    if (aid < 0 || aid >= number_of_nodes()) {
+      throw GeneralException("Digraph: get_name_by_id: Node for this id don't exist.");
+    }
+    return name[aid];
+  }
+  static Digraph<T> from_stream(std::istream &is);
+  static Digraph<T> from_string(std::string str);
+  static Digraph<T> from_file(std::string filename);
 };
 
 template class Digraph<std::string>;

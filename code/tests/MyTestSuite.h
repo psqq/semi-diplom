@@ -1,5 +1,6 @@
 #include "cxxtest/TestSuite.h"
 #include "digraph.h"
+#include "digraphiso.h"
 #include "exceptions.h"
 #include "semiiso.h"
 #include "semilattice.h"
@@ -134,6 +135,24 @@ public:
       g3.add_node(i);
     TS_ASSERT_EQUALS(g3.number_of_nodes(), n);
     TS_ASSERT_EQUALS(g3.number_of_edges(), 0);
+  }
+
+  void test_Digraph_from_string() {
+    Digraph<int> g1, g2;
+    g1 = Digraph<int>::from_string(R"(
+      0 1 2
+    )");
+    TS_ASSERT_EQUALS(g1.number_of_nodes(), 3);
+    TS_ASSERT_EQUALS(g1.number_of_edges(), 2);
+    TS_ASSERT(g1.is_edge(0, 1));
+    TS_ASSERT(g1.is_edge(1, 2));
+    g2 = Digraph<int>::from_string(R"(
+      0 1 2
+      2 3
+      2 4
+    )");
+    TS_ASSERT_EQUALS(g2.number_of_nodes(), 5);
+    TS_ASSERT_EQUALS(g2.number_of_edges(), 4);
   }
 
   void test_Digraph_METHODS_add_edge_AND_is_edge() {
@@ -345,17 +364,116 @@ public:
     TS_ASSERT(is_isomorphic(s4, s4));
   }
 
-  void test_FUNCTION_is_isomorphic_FOR_NON_TREE_Semilattices() {
-    Semilattice<int> s1, s2;
-    s1.from_string(R"(
-      0 0 0 0
-      0 1 0 1
-      0 0 2 2
-      0 1 2 3
-    )");
+  // void test_FUNCTION_is_isomorphic_FOR_NON_TREE_Semilattices() {
+  //   Semilattice<int> s1, s2;
+  //   s1.from_string(R"(
+  //     0 0 0 0
+  //     0 1 0 1
+  //     0 0 2 2
+  //     0 1 2 3
+  //   )");
+  //   Digraph<int> g1;
+  //   g1.add_edges({{0, 1}, {0, 2}, {1, 3}, {2, 3}});
+  //   s2 = to_semi(g1);
+  //   TS_ASSERT(is_isomorphic(s1, s2));
+  // }
+
+  //----------------------------------------------------------------------------
+  // DIGRAPHISO MODULE TESTS
+  //----------------------------------------------------------------------------
+  void test_DigraphIso_simple_test_1() {
+    Digraph<int> g1, g2;
+    g1.add_edge(0, 1);
+    g2.add_edge(1, 0);
+    DigraphIso<int, int> digiso(g1, g2);
+    TS_ASSERT(digiso.is_iso());
+    map<int, int> biection = digiso.get_biection();
+    TS_ASSERT_EQUALS(biection[0], 1);
+    TS_ASSERT_EQUALS(biection[1], 0);
+  }
+
+  void test_DigraphIso_simple_test_2() {
     Digraph<int> g1;
-    g1.add_edges({{0, 1}, {0, 2}, {1, 3}, {2, 3}});
-    s2 = to_semi(g1);
-    TS_ASSERT(is_isomorphic(s1, s2));
+    Digraph<string> g2;
+    g1.add_edge(111, 222);
+    g2.add_edge("hello", "world");
+    DigraphIso<int, string> digiso(g1, g2);
+    TS_ASSERT(digiso.is_iso());
+    map<int, string> biection = digiso.get_biection();
+    TS_ASSERT_EQUALS(biection[111], "hello");
+    TS_ASSERT_EQUALS(biection[222], "world");
+    // cout << endl;
+    // for (auto p : digiso.get_biection()) {
+    //   cout << p.first << " -> " << p.second << endl;
+    // }
+  }
+
+  void test_DigraphIso_simple_test_3() {
+    Digraph<int> g1;
+    Digraph<string> g2;
+    g1.add_edge(111, 222);
+    g2.add_edge("hello", "world");
+    DigraphIso<int, string> digiso(g1, g2);
+    TS_ASSERT(digiso.is_iso());
+    map<int, string> biection = digiso.get_biection();
+    TS_ASSERT_EQUALS(biection[111], "hello");
+    TS_ASSERT_EQUALS(biection[222], "world");
+    // cout << endl;
+    // for (auto p : biection) {
+    //   cout << p.first << " -> " << p.second << endl;
+    // }
+  }
+
+  void test_DigraphIso_simple_test_4() {
+    Digraph<int> g1, g2;
+    g1 = Digraph<int>::from_string(R"(
+      0 1 3
+      0 2 3
+    )");
+    g2 = Digraph<int>::from_string(R"(
+      3 1 0
+      3 2 0
+    )");
+    DigraphIso<int, int> digiso(g1, g2);
+    TS_ASSERT(digiso.is_iso());
+    map<int, int> biection = digiso.get_biection();
+    TS_ASSERT_EQUALS(biection[0], 3);
+    TS_ASSERT_EQUALS(biection[3], 0);
+    // cout << endl;
+    // for (auto p : biection) {
+    //   cout << p.first << " -> " << p.second << endl;
+    // }
+  }
+
+  void test_DigraphIso_simple_test_5() {
+    Digraph<int> g1, g2;
+    g1.add_node(0);
+    g2.add_edge(1, 0);
+    DigraphIso<int, int> digiso(g1, g2);
+    TS_ASSERT(!digiso.is_iso());
+  }
+
+  void test_DigraphIso_simple_test_6() {
+    Digraph<int> g1, g2;
+    g1.add_edges({{0, 1}, {1, 2}, {2, 3}});
+    g2.add_edges({{0, 1}, {1, 2}, {1, 3}});
+    DigraphIso<int, int> digiso(g1, g2);
+    TS_ASSERT(!digiso.is_iso());
+  }
+
+  void test_DigraphIso_hard_test_1() {
+    Digraph<int> g1, g2;
+    g1 = Digraph<int>::from_string(R"(
+      1 2 4
+      1 3 5 7
+      3 6 7
+    )");
+    g2 = Digraph<int>::from_string(R"(
+      7 8 20 1
+      7 11 55 1
+      11 800
+    )");
+    DigraphIso<int, int> digiso(g1, g2);
+    TS_ASSERT(!digiso.is_iso());
   }
 };
