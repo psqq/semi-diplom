@@ -6,7 +6,7 @@ OBJS := $(SRCS:.cpp=.o)
 CFLAGS = --std=c++14 -g -pipe
 LINK_FLAGS = -pipe
 
-.PHONY: clear_screen all clean depend run_tests t
+.PHONY: clear_screen all clean depend run_tests t run_bin_tests bt
 
 all: clear_screen depend $(BIN)
 
@@ -30,6 +30,15 @@ $(BIN): $(OBJS)
 
 %.o: %.cpp
 	g++ $(CFLAGS) -c $< -o $@
+
+bt: run_bin_tests
+
+bin_tests/$(BIN): $(BIN)
+	rm -f ./bin_tests/$(BIN) || true
+	cp $(BIN) ./bin_tests/
+
+run_bin_tests: bin_tests/$(BIN)
+	cd bin_tests; bats .
 
 t: run_tests
 

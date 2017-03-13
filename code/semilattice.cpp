@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 using namespace std;
 
 SimpleSemilattice::SimpleSemilattice(int new_n) { resize(new_n); }
@@ -143,7 +144,9 @@ void Semilattice<T>::throw_exception_if_element_does_not_exist(T a) {
   }
 }
 
-template <class T> void Semilattice<T>::load_from_stream(std::istream &is) {
+template <class T>
+Semilattice<T> Semilattice<T>::from_stream(std::istream &is) {
+  Semilattice<T> s;
   vector<T> a;
   T t;
   set<T> elems;
@@ -160,7 +163,7 @@ template <class T> void Semilattice<T>::load_from_stream(std::istream &is) {
     throw GeneralException("Semilattice: load_from_stream: elems.size() != n.");
   }
   for (T el : elems) {
-    add_element(el);
+    s.add_element(el);
   }
   // cout << endl;
   // for (int i = 0; i < n*n; i++) {
@@ -170,15 +173,21 @@ template <class T> void Semilattice<T>::load_from_stream(std::istream &is) {
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
       // cout << name[i] << " " << name[j] << " " << a[i*n + j] << endl;
-      set_inf(name[i], name[j], a[i * n + j]);
+      s.set_inf(s.name[i], s.name[j], a[i * n + j]);
     }
   }
   // cout << endl;
+  return s;
 }
 
-template <class T> void Semilattice<T>::from_string(std::string s) {
+template <class T> Semilattice<T> Semilattice<T>::from_string(std::string s) {
   stringstream ss(s);
-  load_from_stream(ss);
+  return from_stream(ss);
+}
+
+template <class T> Semilattice<T> Semilattice<T>::from_file(std::string fn) {
+  ifstream f(fn);
+  return from_stream(f);
 }
 
 template <class T> bool Semilattice<T>::is_valid() {

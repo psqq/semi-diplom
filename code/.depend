@@ -1,4 +1,4 @@
-main.o: main.cpp digraph.h exceptions.h
+main.o: main.cpp semiiso.h digraph.h exceptions.h semilattice.h
 digraph.o: digraph.cpp digraph.h exceptions.h
 exceptions.o: exceptions.cpp digraph.h exceptions.h semilattice.h
 semiiso.o: semiiso.cpp digraphiso.h digraph.h exceptions.h semiiso.h \

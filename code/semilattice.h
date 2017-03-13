@@ -34,8 +34,6 @@ template <class T> class Semilattice {
   SimpleSemilattice simple_semilattice;
 
 public:
-  void load_from_stream(std::istream &is);
-  void from_string(std::string s);
   void add_element(T a);
   template <class U> void add_elements(U elems) {
     for (T el : elems) {
@@ -52,6 +50,9 @@ public:
   bool is_associative();
   bool is_commutativity();
   bool is_idempotence();
+  static Semilattice<T> from_stream(std::istream &is);
+  static Semilattice<T> from_file(std::string fn);
+  static Semilattice<T> from_string(std::string s);
 };
 
 template class Semilattice<std::string>;
