@@ -156,5 +156,6 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
   if (g1_is_tree) {
     return tree_is_isomorphic(g1, g2);
   }
-  return false;
+  DigraphIso<T> digiso(g1, g2);
+  return digiso.is_iso();
 }

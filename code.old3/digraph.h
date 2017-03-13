@@ -3,8 +3,8 @@
 
 #include <iostream>
 #include <map>
-#include <vector>
 #include <set>
+#include <vector>
 
 class SimpleDigraph {
   static const int BUFFER_INCREASE = 100;
@@ -53,6 +53,7 @@ public:
   int number_of_edges();
   bool is_tree_with_root(T root);
   int shortest_path_length(T u, T v);
+  SimpleDigraph get_simple_digraph() { return simple_digraph; }
 };
 
 template class Digraph<std::string>;

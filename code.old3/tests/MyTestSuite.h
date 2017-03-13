@@ -322,7 +322,7 @@ public:
     TS_ASSERT(!tree_is_isomorphic(g3, g4));
   }
 
-  void test_FUNCTION_is_isomorphic_for_Semilattices() {
+  void test_FUNCTION_is_isomorphic_FOR_SIMPLE_AND_TREE_Semilattices() {
     Semilattice<string> s1, s2;
     s1.from_string("0");
     s2.from_string("a");
@@ -343,5 +343,19 @@ public:
     TS_ASSERT(is_isomorphic(s3, s4));
     TS_ASSERT(is_isomorphic(s4, s3));
     TS_ASSERT(is_isomorphic(s4, s4));
+  }
+
+  void test_FUNCTION_is_isomorphic_FOR_NON_TREE_Semilattices() {
+    Semilattice<int> s1, s2;
+    s1.from_string(R"(
+      0 0 0 0
+      0 1 0 1
+      0 0 2 2
+      0 1 2 3
+    )");
+    Digraph<int> g1;
+    g1.add_edges({{0, 1}, {0, 2}, {1, 3}, {2, 3}});
+    s2 = to_semi(g1);
+    TS_ASSERT(is_isomorphic(s1, s2));
   }
 };

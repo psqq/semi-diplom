@@ -142,11 +142,17 @@ public:
  void runTest() { suite_MyTestSuite.test_FUNCTION_tree_is_isomorphic(); }
 } testDescription_suite_MyTestSuite_test_FUNCTION_tree_is_isomorphic;
 
-static class TestDescription_suite_MyTestSuite_test_FUNCTION_is_isomorphic_for_Semilattices : public CxxTest::RealTestDescription {
+static class TestDescription_suite_MyTestSuite_test_FUNCTION_is_isomorphic_FOR_SIMPLE_AND_TREE_Semilattices : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_MyTestSuite_test_FUNCTION_is_isomorphic_for_Semilattices() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 325, "test_FUNCTION_is_isomorphic_for_Semilattices" ) {}
- void runTest() { suite_MyTestSuite.test_FUNCTION_is_isomorphic_for_Semilattices(); }
-} testDescription_suite_MyTestSuite_test_FUNCTION_is_isomorphic_for_Semilattices;
+ TestDescription_suite_MyTestSuite_test_FUNCTION_is_isomorphic_FOR_SIMPLE_AND_TREE_Semilattices() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 325, "test_FUNCTION_is_isomorphic_FOR_SIMPLE_AND_TREE_Semilattices" ) {}
+ void runTest() { suite_MyTestSuite.test_FUNCTION_is_isomorphic_FOR_SIMPLE_AND_TREE_Semilattices(); }
+} testDescription_suite_MyTestSuite_test_FUNCTION_is_isomorphic_FOR_SIMPLE_AND_TREE_Semilattices;
+
+static class TestDescription_suite_MyTestSuite_test_FUNCTION_is_isomorphic_FOR_NON_TREE_Semilattices : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_MyTestSuite_test_FUNCTION_is_isomorphic_FOR_NON_TREE_Semilattices() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 348, "test_FUNCTION_is_isomorphic_FOR_NON_TREE_Semilattices" ) {}
+ void runTest() { suite_MyTestSuite.test_FUNCTION_is_isomorphic_FOR_NON_TREE_Semilattices(); }
+} testDescription_suite_MyTestSuite_test_FUNCTION_is_isomorphic_FOR_NON_TREE_Semilattices;
 
 #include <cxxtest/Root.cpp>
 const char* CxxTest::RealWorldDescription::_worldName = "cxxtest";
