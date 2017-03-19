@@ -11,8 +11,11 @@ template <class T> Inv3<T>::Inv3(Digraph<T> ag) {
   g = ag;
   find_leaves();
   root = find_root(g);
+  for (T v : g.nodes()) {
+    inv3_for_node[v] = get_inv3_for_node(v);
+  }
+  full_inv3 = get_full_inv3();
 }
-
 
 template <class T> void Inv3<T>::find_leaves() {
   for (T v : g.nodes()) {
@@ -23,6 +26,10 @@ template <class T> void Inv3<T>::find_leaves() {
 }
 
 template <class T> string Inv3<T>::get_inv3_for_node(T v) {
+  return inv3_for_node[v];
+}
+
+template <class T> string Inv3<T>::compute_inv3_for_node(T v) {
   if (is_empty)
     return "";
   stringstream ss;
@@ -43,6 +50,10 @@ template <class T> string Inv3<T>::get_inv3_for_node(T v) {
 }
 
 template <class T> string Inv3<T>::get_full_inv3() {
+  return full_inv3;
+}
+
+template <class T> string Inv3<T>::compute_full_inv3() {
   if (is_empty)
     return "";
   string full_inv3;

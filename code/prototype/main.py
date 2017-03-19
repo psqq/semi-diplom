@@ -1,7 +1,7 @@
 from digraph import *
 from semi import *
 
-n = 4
+n = 10
 vs = []
 k = 0
 for i in range(n):
@@ -10,7 +10,7 @@ for i in range(n):
         l.append(k)
         k += 1
     vs.append(l)
-print(vs)
+# print(vs)
 
 g = nx.DiGraph()
 for i in range(n):
@@ -20,11 +20,11 @@ for i in range(n):
         if j < n - 1:
             g.add_edge(vs[i][j], vs[i][j + 1])
 
-print(g.nodes(), g.edges(), sep='\n')
+# print(g.nodes(), g.edges(), sep='\n')
 s = to_semi(g)
-print(is_valid_semi(s))
+# print(is_valid_semi(s))
 s_text = semi_to_text(s)
-print(semi_to_text(s))
+# print(semi_to_text(s))
 with open("sqsemi.txt", "w") as f:
     f.write(s_text)
 

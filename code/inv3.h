@@ -13,6 +13,10 @@ template <class T> class Inv3 {
   T root;
   std::vector<T> leaves;
   void find_leaves();
+  std::map<T, std::string> inv3_for_node;
+  std::string full_inv3;
+  std::string compute_inv3_for_node(T v);
+  std::string compute_full_inv3();
 
 public:
   Inv3();

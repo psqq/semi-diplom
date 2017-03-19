@@ -7,6 +7,8 @@
 #include <iostream>
 #include <set>
 #include <tuple>
+#include <iostream>
+#include <ctime>
 using namespace std;
 
 template <class T> Digraph<T> to_digraph(Semilattice<T> s) {
@@ -222,7 +224,22 @@ template bool is_isomorphic<string>(Semilattice<string> s1,
 template bool is_isomorphic<int>(Semilattice<int> s1, Semilattice<int> s2);
 
 template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
+
+#ifdef DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+  cout << endl << "BEGIN OF is_isomorphic" << endl;
+  clock_t t;
+  cout << "Convert s1, s2 to digraphs... ";
+  t = clock();
+#endif // DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+
   Digraph<T> g1 = to_digraph(s1), g2 = to_digraph(s1);
+
+#ifdef DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+  cout << ((float)(clock() - t) / CLOCKS_PER_SEC) << " sec." << endl;
+  cout << "Various checks... ";
+  t = clock();
+#endif // DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+
   int n = g1.number_of_nodes();
   if (n != g2.number_of_nodes() ||
       g1.number_of_edges() != g2.number_of_edges()) {
@@ -236,17 +253,45 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
   if (g1_is_tree) {
     return tree_is_isomorphic(g1, g2);
   }
+
+#ifdef DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+  cout << ((float)(clock() - t) / CLOCKS_PER_SEC) << " sec." << endl;
+  cout << "Build digraphs G1 and G2... ";
+  t = clock();
+#endif // DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+
   Digraph<T> g1_G1, g1_G2, g2_G1, g2_G2;
   tie(g1_G1, g1_G2) = find_G1_and_G2_graphs(g1);
   tie(g2_G1, g2_G2) = find_G1_and_G2_graphs(g2);
   if (!tree_is_isomorphic(g1_G1, g2_G1) || !tree_is_isomorphic(g1_G2, g2_G2)) {
     return false;
   }
+
+#ifdef DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+  cout << ((float)(clock() - t) / CLOCKS_PER_SEC) << " sec." << endl;
+  cout << "Invariant 3... ";
+  t = clock();
+#endif // DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+
   Inv3<T> inv3_for_g1_G2(g1_G2);
   Inv3<T> inv3_for_g2_G2(g2_G2);
+
+#ifdef DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+  cout << ((float)(clock() - t) / CLOCKS_PER_SEC) << " sec." << endl;
+  cout << "DigraphIso::is_iso... ";
+  t = clock();
+#endif // DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+
   DigraphIso<T, T> digiso(g1_G2, g2_G2, [&](T v, T u) {
     return inv3_for_g1_G2.get_inv3_for_node(v) == inv3_for_g2_G2.get_inv3_for_node(u);
   });
   // digiso.set_initial_biection({{r1, r2}});
-  return digiso.is_iso();
+  bool res = digiso.is_iso();
+
+#ifdef DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+  cout << ((float)(clock() - t) / CLOCKS_PER_SEC) << " sec." << endl;
+  cout << "END OF is_isomorphic" << endl << endl;
+#endif // DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+
+  return res;
 }
