@@ -4,19 +4,30 @@ SRCS = main.cpp digraph.cpp exceptions.cpp semiiso.cpp semilattice.cpp \
 	matrix.cpp digraphiso.cpp inv3.cpp
 OBJS := $(SRCS:.cpp=.o)
 
-DEBUG = 0
-ifeq ($(DEBUG), 1)
+# configuration
+DEBUG_PRINTING = 0
+USE_PRECOMILE_HEADERS = 1
+PROFILER = 1
+
+# create CFLAGS
+ifeq ($(DEBUG_PRINTING), 1)
 MY_DEFINES = -DDEBUG_PRINTING_FOR_IS_ISOMORPHIC
 endif
 
-PROFILER = 1
 ifeq ($(PROFILER), 1)
 PROFILER_FLAGS = -pg
 endif
 
 CFLAGS = --std=c++14 -g -pipe $(MY_DEFINES) $(PROFILER_FLAGS)
+
+ifeq ($(USE_PRECOMILE_HEADERS), 1)
+CFLAGS += -fexceptions # -H
+endif
+
+# create LINK_FLAGS
 LINK_FLAGS = -pipe $(PROFILER_FLAGS)
 
+#-------------------------------------------------------------------------------
 .PHONY: clear_screen all clean depend run_tests t run_bin_tests bt \
 	test_sq_semi sqt
 
@@ -29,6 +40,7 @@ clean:
 	rm -f $(BIN)
 	rm -f *.gch
 
+#-------------------------------------------------------------------------------
 depend: .depend
 
 .depend: $(SRCS)
@@ -37,6 +49,7 @@ depend: .depend
 
 include .depend
 
+#-------------------------------------------------------------------------------
 $(BIN): $(OBJS)
 	g++ $(LINK_FLAGS) -o $(BIN) $(OBJS)
 

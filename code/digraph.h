@@ -1,11 +1,11 @@
 #ifndef DIGRAPH_H
 #define DIGRAPH_H
 
+#include "exceptions.h"
 #include <iostream>
 #include <map>
 #include <set>
 #include <vector>
-#include "exceptions.h"
 
 class SimpleDigraph {
   static const int BUFFER_INCREASE = 100;
@@ -56,7 +56,8 @@ public:
   SimpleDigraph get_simple_digraph() { return simple_digraph; }
   T get_name_by_id(int aid) {
     if (aid < 0 || aid >= number_of_nodes()) {
-      throw GeneralException("Digraph: get_name_by_id: Node for this id don't exist.");
+      throw GeneralException(
+          "Digraph: get_name_by_id: Node for this id don't exist.");
     }
     return name[aid];
   }

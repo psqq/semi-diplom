@@ -23,7 +23,7 @@ public:
 class BufferLimitException : public GeneralException {
 public:
   BufferLimitException(std::string amsg, int new_max_n, int max_n,
-                                    int buffer_limit);
+                       int buffer_limit);
 };
 
 // class SimpleSemilatticeElementDoesNotExist : public GeneralException {
@@ -36,7 +36,7 @@ public:
   SimpleDigraphException(SimpleDigraph *g = nullptr, std::string amsg = "");
 };
 
-template<class T>
+template <class T>
 class PathDontFoundException : public SimpleDigraphException {
 public:
   PathDontFoundException(T from, T to);
