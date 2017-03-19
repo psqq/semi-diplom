@@ -1,7 +1,34 @@
 from digraph import *
 from semi import *
 
-print(load_semi_from_file("semi.txt"))
+n = 4
+vs = []
+k = 0
+for i in range(n):
+    l = []
+    for j in range(n):
+        l.append(k)
+        k += 1
+    vs.append(l)
+print(vs)
+
+g = nx.DiGraph()
+for i in range(n):
+    for j in range(n):
+        if i < n - 1:
+            g.add_edge(vs[i][j], vs[i + 1][j])
+        if j < n - 1:
+            g.add_edge(vs[i][j], vs[i][j + 1])
+
+print(g.nodes(), g.edges(), sep='\n')
+s = to_semi(g)
+print(is_valid_semi(s))
+s_text = semi_to_text(s)
+print(semi_to_text(s))
+with open("sqsemi.txt", "w") as f:
+    f.write(s_text)
+
+# print(load_semi_from_file("semi.txt"))
 
 # g = load_digraph_from_file('1.dig')
 # s = to_semi(g)

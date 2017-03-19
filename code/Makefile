@@ -37,7 +37,11 @@ bin_tests/$(BIN): $(BIN)
 	rm -f ./bin_tests/$(BIN) || true
 	cp $(BIN) ./bin_tests/
 
-run_bin_tests: bin_tests/$(BIN)
+bin_tests/sqsemi.txt: prototype/sqsemi.txt
+	rm -f $@ || true
+	cp $< ./bin_tests/
+
+run_bin_tests: bin_tests/$(BIN) bin_tests/sqsemi.txt
 	cd bin_tests; bats .
 
 t: run_tests
