@@ -5,7 +5,7 @@ SRCS = main.cpp digraph.cpp exceptions.cpp semiiso.cpp semilattice.cpp \
 OBJS := $(SRCS:.cpp=.o)
 
 # configuration
-DEBUG_PRINTING = 0
+DEBUG_PRINTING = 1
 USE_PRECOMILE_HEADERS = 1
 PROFILER = 1
 
@@ -21,7 +21,7 @@ endif
 CFLAGS = --std=c++14 -g -pipe $(MY_DEFINES) $(PROFILER_FLAGS)
 
 ifeq ($(USE_PRECOMILE_HEADERS), 1)
-CFLAGS += -fexceptions # -H
+CFLAGS += # -fexceptions # -H
 endif
 
 # create LINK_FLAGS
@@ -75,10 +75,16 @@ run_bin_tests: bin_tests/$(BIN)
 #-------------------------------------------------------------------------------
 sqt: test_sq_semi
 
-bin_tests/sqsemi.txt: prototype/sqsemi.txt
-	rm -f $@ || true
-	cp $< ./bin_tests/
+test_sq_semi: bin_tests/$(BIN)
+	make -C ./bin_tests/ test_sq_semi
 
-test_sq_semi: SHELL=/bin/bash
-test_sq_semi: bin_tests/$(BIN) bin_tests/sqsemi.txt
-	cd bin_tests; time ./semi iso sqsemi.txt sqsemi.txt
+# bin_tests/sqsemi.txt: prototype/sqsemi.txt
+# 	rm -f $@ || true
+# 	cp $< ./bin_tests/
+#
+# bin_tests/gprof-out.txt: bin_tests/gmon.out
+# 	cd bin_tests; gprof semi > gprof-out.txt
+#
+# test_sq_semi: SHELL=/bin/bash
+# test_sq_semi: bin_tests/$(BIN) bin_tests/sqsemi.txt
+# 	cd bin_tests; time ./semi iso sqsemi.txt sqsemi.txt

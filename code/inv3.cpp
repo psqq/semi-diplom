@@ -12,9 +12,9 @@ template <class T> Inv3<T>::Inv3(Digraph<T> ag) {
   find_leaves();
   root = find_root(g);
   for (T v : g.nodes()) {
-    inv3_for_node[v] = get_inv3_for_node(v);
+    inv3_for_node[v] = compute_inv3_for_node(v);
   }
-  full_inv3 = get_full_inv3();
+  full_inv3 = compute_full_inv3();
 }
 
 template <class T> void Inv3<T>::find_leaves() {
