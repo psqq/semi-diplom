@@ -1,5 +1,5 @@
 int main(int argc, char *argv[]) {
-  // clang-format off
+    // clang-format off
     options.add_options()
       ("a,apple", "an apple", cxxopts::value<bool>(apple))
       ("b,bob", "Bob")
@@ -16,5 +16,7 @@ int main(int argc, char *argv[]) {
       ("int", "An integer", cxxopts::value<int>(), "N")
       ("option_that_is_too_long_for_the_help", "A very long option")
     ;
-  // clang-format on
+    // clang-format on
+    int a;
+    a = 1;
 }
