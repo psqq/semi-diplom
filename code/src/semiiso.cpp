@@ -144,14 +144,32 @@ template <class T> bool tree_is_isomorphic(Digraph<T> g1, Digraph<T> g2) {
 template <class T> vector<set<T>> find_branches_of_digraph(Digraph<T> g) {
   vector<set<T>> branches;
   T root = find_root(g);
-  function<set<T>(T)> vertexes_of_subgraph_with_root = [&](T v) {
-    set<T> t = {v}, t2;
-    for (T u : g.successors(v)) {
-      t2 = vertexes_of_subgraph_with_root(u);
-      t.insert(t2.begin(), t2.end());
+  class A {
+    map<T, set<T>> res;
+    map<T, bool> used;
+    Digraph<T> &g;
+  public:
+    A(Digraph<T> &ag) : g(ag) {}
+    set<T> operator() (T v) {
+      if (used[v]) return res[v];
+      set<T> t = {v}, t2;
+      for (T u : g.successors(v)) {
+        t2 = this->operator()(u);
+        t.insert(t2.begin(), t2.end());
+      }
+      used[v] = true;
+      res[v] = t;
+      return t;
     }
-    return t;
-  };
+  } vertexes_of_subgraph_with_root(g);
+  // function<set<T>(T)> vertexes_of_subgraph_with_root = [&](T v) {
+  //   set<T> t = {v}, t2;
+  //   for (T u : g.successors(v)) {
+  //     t2 = vertexes_of_subgraph_with_root(u);
+  //     t.insert(t2.begin(), t2.end());
+  //   }
+  //   return t;
+  // };
   for (T v : g.successors(root)) {
     auto t = vertexes_of_subgraph_with_root(v);
     vector<set<T>> new_branches;
