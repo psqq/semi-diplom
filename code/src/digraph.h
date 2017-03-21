@@ -13,6 +13,8 @@ class SimpleDigraph {
   int n = 0, max_n = 0;
   std::vector<std::vector<int>> adj_matrix;
   void resize(int n);
+  std::vector<std::vector<int>> _shortest_path_length,
+      _undirected_shortest_path_length;
 
 public:
   SimpleDigraph(int n = 0);

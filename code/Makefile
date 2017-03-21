@@ -43,7 +43,8 @@ depend: .depend
 
 .depend: $(SRCS)
 	rm -f ./.depend
-	g++ $(CFLAGS) -MM $^ > ./.depend;
+	g++ $(CFLAGS) -MM $^ > ./.depend
+	python3 fix_depend.py
 
 include .depend
 

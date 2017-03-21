@@ -1,13 +1,13 @@
-matrix.o: src/matrix.cpp src/matrix.h
-semilattice.o: src/semilattice.cpp src/exceptions.h src/semilattice.h
-digraphiso.o: src/digraphiso.cpp src/digraphiso.h src/digraph.h \
+obj/matrix.o: src/matrix.cpp src/matrix.h
+obj/semilattice.o: src/semilattice.cpp src/exceptions.h src/semilattice.h
+obj/digraphiso.o: src/digraphiso.cpp src/digraphiso.h src/digraph.h \
  src/exceptions.h
-semiiso.o: src/semiiso.cpp src/digraphiso.h src/digraph.h \
+obj/semiiso.o: src/semiiso.cpp src/digraphiso.h src/digraph.h \
  src/exceptions.h src/semiiso.h src/semilattice.h src/inv3.h
-inv3.o: src/inv3.cpp src/inv3.h src/digraph.h src/exceptions.h \
+obj/inv3.o: src/inv3.cpp src/inv3.h src/digraph.h src/exceptions.h \
  src/semiiso.h src/semilattice.h
-exceptions.o: src/exceptions.cpp src/digraph.h src/exceptions.h \
+obj/exceptions.o: src/exceptions.cpp src/digraph.h src/exceptions.h \
  src/semilattice.h
-digraph.o: src/digraph.cpp src/digraph.h src/exceptions.h
-main.o: src/main.cpp src/semiiso.h src/digraph.h src/exceptions.h \
+obj/digraph.o: src/digraph.cpp src/digraph.h src/exceptions.h
+obj/main.o: src/main.cpp src/semiiso.h src/digraph.h src/exceptions.h \
  src/semilattice.h

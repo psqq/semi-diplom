@@ -24,8 +24,14 @@ void SimpleDigraph::resize(int new_n) {
   }
   if (adj_matrix.size() != max_n) {
     adj_matrix.resize(max_n);
-    for (int i = 0; i < max_n; i++)
+    _shortest_path_length.resize(max_n);
+    _undirected_shortest_path_length.resize(max_n);
+    for (int i = 0; i < max_n; i++) {
       adj_matrix[i].resize(max_n);
+      _shortest_path_length[i].resize(max_n, -1);
+      _undirected_shortest_path_length[i].resize(max_n, -1);
+      _shortest_path_length[i][i] = _undirected_shortest_path_length[i][i] = 0;
+    }
   }
 }
 
@@ -116,6 +122,15 @@ bool SimpleDigraph::is_tree_with_root(int root) {
 }
 
 int SimpleDigraph::shortest_path_length(int u, int v, bool undirected) {
+  if (undirected && _undirected_shortest_path_length[u][v] >= 0) {
+    return _undirected_shortest_path_length[u][v];
+  }
+  if (undirected && _undirected_shortest_path_length[v][u] >= 0) {
+    return _undirected_shortest_path_length[v][u];
+  }
+  if (!undirected && _shortest_path_length[u][v] >= 0) {
+    return _shortest_path_length[u][v];
+  }
   queue<pair<int, int>> q;
   vector<bool> used(n);
   q.emplace(u, 0);
@@ -124,8 +139,15 @@ int SimpleDigraph::shortest_path_length(int u, int v, bool undirected) {
     tie(w, d) = q.front();
     q.pop();
     used[w] = true;
-    if (w == v)
+    if (undirected) {
+      _undirected_shortest_path_length[u][w] =
+          _undirected_shortest_path_length[w][u] = d;
+    } else {
+      _shortest_path_length[u][w] = d;
+    }
+    if (w == v) {
       return d;
+    }
     for (int i = 0; i < n; i++) {
       if ((adj_matrix[w][i] || (undirected && adj_matrix[i][w])) && !used[i]) {
         q.emplace(i, d + 1);
@@ -246,8 +268,7 @@ int Digraph<T>::shortest_path_length(T u, T v, bool undirected) {
   }
 }
 
-template <class T>
-int Digraph<T>::shortest_path_length(T u, T v) {
+template <class T> int Digraph<T>::shortest_path_length(T u, T v) {
   return shortest_path_length(u, v, false);
 }
 

@@ -1,28 +1,28 @@
 
 BIN = tests
 OBJS := $(filter-out ../obj/main.o,$(wildcard ../obj/*.o)) tests.o
-CFLAGS = --std=c++14
+CFLAGS = --std=c++14 -I. -I../src/
 
-.PHONY: run_tests all depend
+.PHONY: run_tests all
 
-all: $(BIN)
+all: depend $(BIN)
 
-# depend: .depend
-#
-# .depend: tests.cpp
-# 	rm -f ./.depend
-# 	g++ --std=c++14 -MM -I.. -I. tests.cpp > ./.depend
-#
-# include .depend
+depend: .depend
+
+.depend: tests.cpp
+	rm -f .depend
+	g++ $(CFLAGS) -MM tests.cpp > .depend
+
+include .depend
 
 tests.cpp: MyTestSuite.h
 	cxxtestgen --error-printer -o tests.cpp MyTestSuite.h
 
 tests.o: tests.cpp
-	g++ -g -c tests.cpp $(CFLAGS) -I. -I..
+	g++ -g -c tests.cpp $(CFLAGS)
 
 $(BIN):  $(OBJS)
-	g++ -o $(BIN) $(OBJS) -I. -I..
+	g++ -o $(BIN) $(OBJS)
 
 run_tests: all
 	./$(BIN)

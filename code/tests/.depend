@@ -1,0 +1,14 @@
+tests.o: tests.cpp cxxtest/TestListener.h cxxtest/Descriptions.h \
+ cxxtest/LinkedList.h cxxtest/Flags.h cxxtest/TestTracker.h \
+ cxxtest/DummyDescriptions.h cxxtest/TestRunner.h \
+ cxxtest/RealDescriptions.h cxxtest/TestSuite.h cxxtest/ValueTraits.h \
+ cxxtest/StdValueTraits.h cxxtest/StdHeaders.h cxxtest/StdTestSuite.h \
+ cxxtest/GlobalFixture.h cxxtest/TestMain.h cxxtest/ErrorPrinter.h \
+ cxxtest/ErrorFormatter.h MyTestSuite.h cxxtest/TestSuite.h \
+ ../src/digraph.h ../src/exceptions.h ../src/digraphiso.h \
+ ../src/digraph.h ../src/exceptions.h ../src/semiiso.h \
+ ../src/semilattice.h ../src/semilattice.h ../src/inv3.h ../src/semiiso.h \
+ cxxtest/Root.cpp cxxtest/ValueTraits.cpp cxxtest/Descriptions.cpp \
+ cxxtest/DummyDescriptions.cpp cxxtest/GlobalFixture.cpp \
+ cxxtest/LinkedList.cpp cxxtest/RealDescriptions.cpp \
+ cxxtest/TestSuite.cpp cxxtest/TestTracker.cpp
