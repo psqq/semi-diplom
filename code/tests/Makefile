@@ -1,6 +1,6 @@
 
 BIN = tests
-OBJS := $(filter-out ../main.o,$(wildcard ../*.o)) tests.o
+OBJS := $(filter-out ../obj/main.o,$(wildcard ../obj/*.o)) tests.o
 CFLAGS = --std=c++14
 
 .PHONY: run_tests all depend

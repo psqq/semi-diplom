@@ -1,13 +1,13 @@
 
 BIN = semi
-SRCS = main.cpp digraph.cpp exceptions.cpp semiiso.cpp semilattice.cpp \
-	matrix.cpp digraphiso.cpp inv3.cpp
-OBJS := $(SRCS:.cpp=.o)
+SRCS := $(wildcard src/*.cpp)
+OBJS := $(patsubst src/%.cpp,obj/%.o,$(SRCS))
 
 # configuration
 DEBUG_PRINTING = 1
-USE_PRECOMILE_HEADERS = 1
 PROFILER = 1
+
+# USE_PRECOMILE_HEADERS = 1
 
 # create CFLAGS
 ifeq ($(DEBUG_PRINTING), 1)
@@ -18,13 +18,11 @@ ifeq ($(PROFILER), 1)
 PROFILER_FLAGS = -pg
 endif
 
+# ifeq ($(USE_PRECOMILE_HEADERS), 1)
+# CFLAGS += # -fexceptions # -H
+# endif
+
 CFLAGS = --std=c++14 -g -pipe $(MY_DEFINES) $(PROFILER_FLAGS)
-
-ifeq ($(USE_PRECOMILE_HEADERS), 1)
-CFLAGS += # -fexceptions # -H
-endif
-
-# create LINK_FLAGS
 LINK_FLAGS = -pipe $(PROFILER_FLAGS)
 
 #-------------------------------------------------------------------------------
@@ -53,7 +51,7 @@ include .depend
 $(BIN): $(OBJS)
 	g++ $(LINK_FLAGS) -o $(BIN) $(OBJS)
 
-%.o: %.cpp
+obj/%.o: src/%.cpp
 	g++ $(CFLAGS) -c $< -o $@
 
 #-------------------------------------------------------------------------------
