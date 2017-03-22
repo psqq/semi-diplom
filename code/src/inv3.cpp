@@ -1,9 +1,9 @@
 #include "inv3.h"
 using namespace std;
 
-template <class T> Inv3<T>::Inv3() : is_empty(true) {}
+template <class T> Inv3<T>::Inv3() : is_empty(true), root() {}
 
-template <class T> Inv3<T>::Inv3(Digraph<T> ag) {
+template <class T> Inv3<T>::Inv3(Digraph<T> ag) : root() {
   if (ag.number_of_nodes() == 0) {
     is_empty = true;
     return;

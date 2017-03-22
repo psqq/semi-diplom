@@ -20,7 +20,7 @@ template <class T> class Inv3 {
 
 public:
   Inv3();
-  Inv3(Digraph<T> ag);
+  explicit Inv3(Digraph<T> ag);
   std::string get_inv3_for_node(T v);
   std::string get_full_inv3();
 };

@@ -3,25 +3,30 @@
 #include <fstream>
 using namespace std;
 
-const char *usage = R"EOF(Usage help:
-semi iso f1 f2 - проверить полурешетки из файлов f1 и f1 на изоморфизм.
-semi tos f1 -   convert digraph (file f1) to semilattice
-semi giso f1 f2 -- test isomorphic for digraphs from files f1 and f2
+const char *usage_ru = R"EOF(Usage help:
+semi iso f1 f2 - проверить полурешетки из файлов f1 и f2 на изоморфизм.
+semi tos f1 - преобразует орграф из файла f1 в полурешетку.
+semi giso f1 f2 - проверить орграфы из файлов f1 и f2 на изоморфизм.
+
+-log - добавьте этот флаг для ведения программой подробного лога. Все
+данные будут записываться в файл log.txt. Если такой файл существует, то
+он будет перезаписан.
 
 -int - используйте этот флаг, когда все элементы - целые числа, иначе элементами
 будут строки.
 
-Используйте флаг -fast для отключения различных проверок на ошибки. Также не
+-fast - этот флаг нужен для отключения различных проверок на ошибки. Также не
 будут доступны произвольные имена для элементов орграфов и полурешеток. Все
 элементы должны именоваться следующим образом: 0, 1, 2, ..., n-2, n-1,
 где n - это размер орграфа или полурешетки.
 )EOF";
 
-bool fast_mode = false, int_mode = false;
+bool fast_mode = false, int_mode = false, log_mode = false;
 
 char *cmd;
 int count_cmd_args;
 char **cmd_argv;
+ofstream semi_log;
 
 template <class T> int iso() {
   if (count_cmd_args < 2) {
@@ -41,14 +46,14 @@ template <class T> int tos() {
     cout << "too few arguments" << endl;
     return 1;
   }
-  Digraph<string> g = Digraph<string>::from_file(argv[2]);
-  Semilattice<string> s;
+  Digraph<T> g = Digraph<T>::from_file(cmd_argv[0]);
+  Semilattice<T> s = to_semi(g);
 }
 
 int main(int argc, char **argv) {
 
   if (argc == 1) {
-    cout << usage;
+    cout << usage_ru;
     return 0;
   }
 
@@ -57,7 +62,13 @@ int main(int argc, char **argv) {
       fast_mode = true;
     } else if (strcmp(argv[i], "-int") == 0) {
       int_mode = true;
+    } else if (strcmp(argv[i], "-log") == 0) {
+      log_mode = true;
     }
+  }
+
+  if (log_mode) {
+    semi_log.open("log.txt");
   }
 
   // cout << "fast_mode == " << fast_mode << endl;
@@ -86,7 +97,7 @@ int main(int argc, char **argv) {
         return 0;
       } else {
         cout << "undefined command" << endl;
-        cout << usage;
+        cout << usage_ru;
         return 1;
       }
     } else { // fast mode

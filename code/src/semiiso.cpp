@@ -149,7 +149,7 @@ template <class T> vector<set<T>> find_branches_of_digraph(Digraph<T> g) {
     map<T, bool> used;
     Digraph<T> &g;
   public:
-    A(Digraph<T> &ag) : g(ag) {}
+    explicit A(Digraph<T> &ag) : g(ag) {}
     set<T> operator() (T v) {
       if (used[v]) return res[v];
       set<T> t = {v}, t2;

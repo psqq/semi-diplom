@@ -14,7 +14,7 @@ class SimpleSemilattice {
   void resize(int new_n);
 
 public:
-  SimpleSemilattice(int new_n = 0);
+  explicit SimpleSemilattice(int new_n = 0);
   int add_element();
   int size();
   int inf(int a, int b);

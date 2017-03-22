@@ -11,13 +11,13 @@ protected:
   std::string msg;
 
 public:
-  GeneralException(std::string amsg = "");
+  explicit GeneralException(std::string amsg = "");
   virtual const char *what() const throw();
 };
 
 class WrongSizeException : public GeneralException {
 public:
-  WrongSizeException(std::string amsg = "") : GeneralException(amsg) {}
+  explicit WrongSizeException(std::string amsg = "") : GeneralException(amsg) {}
 };
 
 class BufferLimitException : public GeneralException {

@@ -17,7 +17,7 @@ class SimpleDigraph {
       _undirected_shortest_path_length;
 
 public:
-  SimpleDigraph(int n = 0);
+  explicit SimpleDigraph(int n = 0);
   int add_node();
   void add_edge(int u, int v);
   void add_edges(std::vector<std::pair<int, int>> edges);
