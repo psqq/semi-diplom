@@ -29,9 +29,7 @@ LINK_FLAGS = -pipe $(PROFILER_FLAGS)
 .PHONY: clear_screen all clean depend run_tests t run_bin_tests bt \
 	test_sq_semi sqt
 
-all: clear_screen depend $(BIN)
-
-clear_screen:
+all: $(BIN)
 
 clean:
 	rm -f *.o
@@ -39,18 +37,20 @@ clean:
 	rm -f *.gch
 
 #-------------------------------------------------------------------------------
-depend: .depend
-
-.depend: $(SRCS)
-	rm -f ./.depend
-	g++ $(CFLAGS) -MM $^ > ./.depend
-	python3 fix_depend.py
-
-include .depend
+# depend: .depend
+#
+# .depend: $(SRCS)
+# 	rm -f ./.depend
+# 	g++ $(CFLAGS) -MM $^ > ./.depend
+# 	python3 fix_depend.py
+#
+# include .depend
 
 #-------------------------------------------------------------------------------
 $(BIN): $(OBJS)
-	g++ $(LINK_FLAGS) -o $(BIN) $(OBJS)
+	cd build && cmake ..
+	# cp build/src/semi build/
+	# cp build/tests/tests build/
 
 obj/%.o: src/%.cpp
 	g++ $(CFLAGS) -c $< -o $@
