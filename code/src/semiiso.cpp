@@ -3,6 +3,7 @@
 #include "inv3.h"
 #include "main.h"
 #include "semiiso.h"
+#include "semilog.h"
 #include <algorithm>
 #include <ctime>
 #include <fstream>

@@ -1,5 +1,6 @@
 #include "main.h"
 #include "semiiso.h"
+#include "semilog.h"
 #include "utils.h"
 #include <cstring>
 #include <fstream>
@@ -71,7 +72,6 @@ template <class T> int tos() {
 }
 
 int main(int argc, char **argv) {
-
   parse_args(argc, argv);
   set<string> all_cmds = {"iso", "tos", "tog", "giso"};
 
@@ -92,12 +92,17 @@ int main(int argc, char **argv) {
       int_mode = true;
     } else if (flag == "-log") {
       log_mode = true;
+      semi_log.log = true;
+    } else if (flag == "-logtofile") {
+      log_mode = true;
+      semi_log.logtofile = true;
+      semi_log.open_logfile();
     }
   }
 
-  if (log_mode) {
-    semi_log.open("log.txt");
-  }
+  // cout << "semi_log.log: " << semi_log.log << endl;
+  // cout << "semi_log.logtofile: " << semi_log.logtofile << endl;
+  // semi_log << "Hello, World!" << endl;
 
   try {
 

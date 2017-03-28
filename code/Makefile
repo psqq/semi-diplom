@@ -1,7 +1,7 @@
 
 BIN = semi
 TESTS_BIN = run_tests
-SRCS := $(wildcard src/*.cpp)
+SRCS := $(wildcard src/*.cpp) $(wildcard src/*.h)
 
 # configuration
 DEBUG_PRINTING = 1
@@ -26,7 +26,7 @@ CFLAGS = --std=c++14 -g -pipe $(MY_DEFINES) $(PROFILER_FLAGS)
 LINK_FLAGS = -pipe $(PROFILER_FLAGS)
 
 #-------------------------------------------------------------------------------
-.PHONY: all clean run_unit_tests t run_bin_tests bt test_sq_semi sqt bt2 run_bin_tests_2
+.PHONY: all clean run_unit_tests t run_bin_tests bt test_sq_semi sqt bt2 run_bin_tests_2 reb
 
 all: $(BIN)
 
@@ -36,6 +36,11 @@ clean:
 
 #-------------------------------------------------------------------------------
 $(BIN): $(SRCS)
+	mkdir build || true
+	cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make
+	cp build/src/semi ./
+
+reb: clean
 	mkdir build || true
 	cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make
 	cp build/src/semi ./
