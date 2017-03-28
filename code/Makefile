@@ -1,7 +1,7 @@
 
 BIN = semi
+TESTS_BIN = run_tests
 SRCS := $(wildcard src/*.cpp)
-OBJS := $(patsubst src/%.cpp,obj/%.o,$(SRCS))
 
 # configuration
 DEBUG_PRINTING = 1
@@ -26,41 +26,28 @@ CFLAGS = --std=c++14 -g -pipe $(MY_DEFINES) $(PROFILER_FLAGS)
 LINK_FLAGS = -pipe $(PROFILER_FLAGS)
 
 #-------------------------------------------------------------------------------
-.PHONY: clear_screen all clean depend run_tests t run_bin_tests bt \
-	test_sq_semi sqt
+.PHONY: all clean run_unit_tests t run_bin_tests bt test_sq_semi sqt
 
 all: $(BIN)
 
 clean:
 	rm -R build || true
-	rm -f $(BIN)
-
-#-------------------------------------------------------------------------------
-# depend: .depend
-#
-# .depend: $(SRCS)
-# 	rm -f ./.depend
-# 	g++ $(CFLAGS) -MM $^ > ./.depend
-# 	python3 fix_depend.py
-#
-# include .depend
+	rm -f $(BIN) $(TESTS_BIN)
 
 #-------------------------------------------------------------------------------
 $(BIN): $(SRCS)
 	mkdir build || true
 	cd build && cmake .. && make
 	cp build/src/semi ./
-	# cp build/src/semi build/
-	# cp build/tests/tests build/
-
-# obj/%.o: src/%.cpp
-# 	g++ $(CFLAGS) -c $< -o $@
 
 #-------------------------------------------------------------------------------
-t: run_tests
+t: run_unit_tests
 
-run_tests: $(OBJS)
-	cd tests; make run_tests
+$(TESTS_BIN): $(BIN)
+	cp build/tests/tests ./$(TESTS_BIN)
+
+run_unit_tests: $(TESTS_BIN)
+	./$(TESTS_BIN)
 
 #-------------------------------------------------------------------------------
 bt: run_bin_tests
@@ -77,14 +64,3 @@ sqt: test_sq_semi
 
 test_sq_semi: bin_tests/$(BIN)
 	make -C ./bin_tests/ test_sq_semi
-
-# bin_tests/sqsemi.txt: prototype/sqsemi.txt
-# 	rm -f $@ || true
-# 	cp $< ./bin_tests/
-#
-# bin_tests/gprof-out.txt: bin_tests/gmon.out
-# 	cd bin_tests; gprof semi > gprof-out.txt
-#
-# test_sq_semi: SHELL=/bin/bash
-# test_sq_semi: bin_tests/$(BIN) bin_tests/sqsemi.txt
-# 	cd bin_tests; time ./semi iso sqsemi.txt sqsemi.txt

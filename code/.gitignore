@@ -2,3 +2,4 @@
 *.o
 semi
 build
+run_tests
