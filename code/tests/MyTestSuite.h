@@ -5,29 +5,10 @@
 #include "semiiso.h"
 #include "semilattice.h"
 #include "inv3.h"
+#include "utils.h"
 #include <cstdlib>
 #include <set>
 using namespace std;
-
-template <class T> ostream &operator<<(ostream &os, set<T> s);
-
-template <class T> ostream &operator<<(ostream &os, vector<T> s) {
-  os << "[ ";
-  for (T x : s) {
-    os << x << " ";
-  }
-  os << "]";
-  return os;
-}
-
-template <class T> ostream &operator<<(ostream &os, set<T> s) {
-  os << "{ ";
-  for (T x : s) {
-    os << x << " ";
-  }
-  os << "}";
-  return os;
-}
 
 class MyTestSuite : public CxxTest::TestSuite {
 public:

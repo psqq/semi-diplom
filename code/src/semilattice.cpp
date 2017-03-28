@@ -205,3 +205,15 @@ template <class T> bool Semilattice<T>::is_commutativity() {
 template <class T> bool Semilattice<T>::is_idempotence() {
   return simple_semilattice.is_idempotence();
 }
+
+template <class T> string Semilattice<T>::to_string() {
+  stringstream ss;
+  int n = size();
+  for(T a: _elements) {
+    for(T b:_elements) {
+      ss << inf(a, b) << " ";
+    }
+    ss << '\n';
+  }
+  return ss.str();
+}

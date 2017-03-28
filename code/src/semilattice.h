@@ -50,6 +50,7 @@ public:
   bool is_associative();
   bool is_commutativity();
   bool is_idempotence();
+  std::string to_string();
   static Semilattice<T> from_stream(std::istream &is);
   static Semilattice<T> from_file(std::string fn);
   static Semilattice<T> from_string(std::string s);

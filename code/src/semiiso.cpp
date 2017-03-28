@@ -9,6 +9,7 @@
 #include <tuple>
 #include <iostream>
 #include <ctime>
+#include <fstream>
 #include "main.h"
 using namespace std;
 
@@ -244,20 +245,20 @@ template bool is_isomorphic<int>(Semilattice<int> s1, Semilattice<int> s2);
 
 template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
 
-#ifdef DEBUG_PRINTING_FOR_IS_ISOMORPHIC
-  cout << endl << "BEGIN OF is_isomorphic" << endl;
   clock_t t;
-  cout << "Convert s1, s2 to digraphs... ";
-  t = clock();
-#endif // DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+  if (log_mode) {
+    semi_log << "Проверка полурешеток s1 и s2 на изоморфизм." << endl;
+    semi_log << "Полурешетка s1:\n" << s1.to_string();
+    semi_log << "Полурешетка s2:\n" << s2.to_string();
+    semi_log << "Преобразование полурешеток s1, s2 в графы g1, g2... ";
+    t = clock();
+  }
 
   Digraph<T> g1 = to_digraph(s1), g2 = to_digraph(s1);
 
-#ifdef DEBUG_PRINTING_FOR_IS_ISOMORPHIC
-  cout << ((float)(clock() - t) / CLOCKS_PER_SEC) << " sec." << endl;
-  cout << "Various checks... ";
-  t = clock();
-#endif // DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+  if (log_mode) {
+    semi_log << ((float)(clock() - t) / CLOCKS_PER_SEC) << " sec." << endl;
+  }
 
   int n = g1.number_of_nodes();
   if (n != g2.number_of_nodes() ||

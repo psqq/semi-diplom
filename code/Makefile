@@ -37,7 +37,7 @@ clean:
 #-------------------------------------------------------------------------------
 $(BIN): $(SRCS)
 	mkdir build || true
-	cd build && cmake .. && make
+	cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make
 	cp build/src/semi ./
 
 #-------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ bin_tests/$(BIN): $(BIN)
 	cp $(BIN) ./bin_tests/
 
 run_bin_tests: bin_tests/$(BIN)
-	cd bin_tests; bats .
+	cd bin_tests && (sh tests.sh || true)
 
 #-------------------------------------------------------------------------------
 sqt: test_sq_semi
