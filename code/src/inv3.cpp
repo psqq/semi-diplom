@@ -1,4 +1,5 @@
 #include "inv3.h"
+#include <algorithm>
 using namespace std;
 
 template <class T> Inv3<T>::Inv3() : is_empty(true), root() {}
@@ -33,8 +34,8 @@ template <class T> string Inv3<T>::compute_inv3_for_node(T v) {
   if (is_empty)
     return "";
   stringstream ss;
-  ss << g.shortest_path_length(root, v, true) << ", " << g.predecessors(v).size()
-     << ", " << g.successors(v).size() << ", (";
+  ss << g.shortest_path_length(root, v, true) << ", "
+     << g.predecessors(v).size() << ", " << g.successors(v).size() << ", (";
   vector<int> t;
   for (int i = 0; i < leaves.size(); i++) {
     t.push_back(g.shortest_path_length(leaves[i], v, true));
@@ -49,16 +50,19 @@ template <class T> string Inv3<T>::compute_inv3_for_node(T v) {
   return ss.str();
 }
 
-template <class T> string Inv3<T>::get_full_inv3() {
-  return full_inv3;
-}
+template <class T> string Inv3<T>::get_full_inv3() { return full_inv3; }
 
 template <class T> string Inv3<T>::compute_full_inv3() {
   if (is_empty)
     return "";
-  string full_inv3;
+  vector<string> arr;
   for (T v : g.nodes()) {
-    full_inv3 += get_inv3_for_node(v) + "; ";
+    arr.push_back(get_inv3_for_node(v));
+  }
+  sort(arr.begin(), arr.end());
+  string full_inv3;
+  for (string x : arr) {
+    full_inv3 += x + "; ";
   }
   return full_inv3;
 }

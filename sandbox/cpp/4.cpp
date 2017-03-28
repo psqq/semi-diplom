@@ -21,16 +21,9 @@ template <class T> A &operator<<(A &a, T x) {
   return a;
 }
 
-A &operator<<(A &a,
-              std::basic_ostream<char> &(*func)(std::basic_ostream<char> &)) {
-  if (a.use_log) {
-    std::cout << func;
-  }
-  if (a.use_filelog) {
-    a.log_file << func;
-  }
-  return a;
-}
+typedef std::basic_ostream<char> &(*Func_Type)(std::basic_ostream<char> &);
+
+A &operator<<(A &a, Func_Type func) { return operator<<<>(a, func); }
 
 int main() {
   A a;
