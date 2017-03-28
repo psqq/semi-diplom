@@ -48,6 +48,7 @@ public:
   void add_edge(T u, T v);
   bool is_edge(T u, T v);
   void add_edges(std::vector<std::pair<T, T>> edges);
+  std::vector<std::pair<T, T>> edges();
   std::vector<T> successors(T v);
   std::vector<T> predecessors(T v);
   int number_of_nodes();
@@ -63,6 +64,7 @@ public:
     }
     return name[aid];
   }
+  std::string to_string();
   static Digraph<T> from_stream(std::istream &is);
   static Digraph<T> from_string(std::string str);
   static Digraph<T> from_file(std::string filename);

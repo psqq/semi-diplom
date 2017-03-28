@@ -1,5 +1,6 @@
 #include "digraph.h"
 #include "exceptions.h"
+#include "utils.h"
 #include <algorithm>
 #include <fstream>
 #include <queue>
@@ -175,19 +176,16 @@ template <class T> bool Digraph<T>::is_node(T v) {
   return _elements.find(v) != _elements.end();
 }
 
-template <class T> set<T> Digraph<T>::nodes() { return _elements; }
-
-template <class T> void Digraph<T>::add_edge(T u, T v) {
-  if (!is_node(u))
-    add_node(u);
-  if (!is_node(v))
+template <class T> void Digraph<T>::add_nodes(vector<T> nodes) {
+  for (T v : nodes)
     add_node(v);
-  simple_digraph.add_edge(id[u], id[v]);
 }
+
+template <class T> set<T> Digraph<T>::nodes() { return _elements; }
 
 template <class T> Digraph<T> Digraph<T>::from_stream(std::istream &is) {
   Digraph<T> g;
-  int line_number = 1;
+  int line_number = 0;
   while (!is.eof()) {
     string line;
     getline(is, line);
@@ -195,11 +193,28 @@ template <class T> Digraph<T> Digraph<T>::from_stream(std::istream &is) {
     if (line.empty())
       continue;
     istringstream iss(line);
+    char ch;
     T u, v;
-    iss >> u;
-    while (iss >> v) {
-      g.add_edge(u, v);
-      u = v;
+    if (line[0] == '+') {
+      iss >> ch;
+      while (iss >> v) {
+        g.add_node(v);
+      }
+    } else if (line[0] == '-') {
+      iss >> ch;
+      iss >> u;
+      while (iss >> v) {
+        g.add_edge(u, v);
+      }
+    } else {
+      if (line[0] == '*') {
+        iss >> ch;
+      }
+      iss >> u;
+      while (iss >> v) {
+        g.add_edge(u, v);
+        u = v;
+      }
     }
   }
   return g;
@@ -213,12 +228,6 @@ template <class T> Digraph<T> Digraph<T>::from_string(std::string str) {
 template <class T> Digraph<T> Digraph<T>::from_file(std::string filename) {
   ifstream f(filename);
   return Digraph<T>::from_stream(f);
-}
-
-template <class T> bool Digraph<T>::is_edge(T u, T v) {
-  if (!is_node(u) || !is_node(v))
-    return false;
-  return simple_digraph.is_edge(id[u], id[v]);
 }
 
 template <class T> vector<T> Digraph<T>::successors(T v) {
@@ -278,7 +287,52 @@ template <class T> void Digraph<T>::add_edges(vector<pair<T, T>> edges) {
   }
 }
 
-template <class T> void Digraph<T>::add_nodes(vector<T> nodes) {
-  for (T v : nodes)
+template <class T> void Digraph<T>::add_edge(T u, T v) {
+  if (!is_node(u))
+    add_node(u);
+  if (!is_node(v))
     add_node(v);
+  simple_digraph.add_edge(id[u], id[v]);
+}
+
+template <class T> bool Digraph<T>::is_edge(T u, T v) {
+  if (!is_node(u) || !is_node(v))
+    return false;
+  return simple_digraph.is_edge(id[u], id[v]);
+}
+
+template <class T> vector<pair<T, T>> Digraph<T>::edges() {
+  vector<pair<T, T>> res;
+  for (T u : _elements) {
+    for (T v : _elements) {
+      if (is_edge(u, v)) {
+        res.emplace_back(u, v);
+      }
+    }
+  }
+  return res;
+}
+
+template <class T> std::string Digraph<T>::to_string() {
+  stringstream ss;
+  // ss << "nodes " << _elements << endl;
+  map<T, bool> used;
+  for (auto e : edges()) {
+    used[e.first] = used[e.second] = true;
+    ss << e.first << " " << e.second << endl;
+  }
+  vector<T> not_used;
+  for (T n : _elements) {
+    if (!used[n]) {
+      not_used.push_back(n);
+    }
+  }
+  if (not_used.size() > 0) {
+    ss << "+ ";
+    for (T n : not_used) {
+      ss << n << " ";
+    }
+    ss << endl;
+  }
+  return ss.str();
 }

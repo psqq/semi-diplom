@@ -1,16 +1,16 @@
 #include "digraphiso.h"
 #include "exceptions.h"
-#include "semiiso.h"
 #include "inv3.h"
+#include "main.h"
+#include "semiiso.h"
 #include <algorithm>
+#include <ctime>
+#include <fstream>
 #include <functional>
+#include <iostream>
 #include <iostream>
 #include <set>
 #include <tuple>
-#include <iostream>
-#include <ctime>
-#include <fstream>
-#include "main.h"
 using namespace std;
 
 template <class T> Digraph<T> to_digraph(Semilattice<T> s) {
@@ -150,10 +150,12 @@ template <class T> vector<set<T>> find_branches_of_digraph(Digraph<T> g) {
     map<T, set<T>> res;
     map<T, bool> used;
     Digraph<T> &g;
+
   public:
     explicit A(Digraph<T> &ag) : g(ag) {}
-    set<T> operator() (T v) {
-      if (used[v]) return res[v];
+    set<T> operator()(T v) {
+      if (used[v])
+        return res[v];
       set<T> t = {v}, t2;
       for (T u : g.successors(v)) {
         t2 = this->operator()(u);
@@ -245,7 +247,7 @@ template bool is_isomorphic<int>(Semilattice<int> s1, Semilattice<int> s2);
 
 template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
 
-  clock_t t;
+  clock_t t, start_time = clock();
   if (log_mode) {
     semi_log << "Проверка полурешеток s1 и s2 на изоморфизм." << endl;
     semi_log << "Полурешетка s1:\n" << s1.to_string();
@@ -254,31 +256,93 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
     t = clock();
   }
 
-  Digraph<T> g1 = to_digraph(s1), g2 = to_digraph(s1);
+  Digraph<T> g1 = to_digraph(s1), g2 = to_digraph(s2);
 
   if (log_mode) {
     semi_log << ((float)(clock() - t) / CLOCKS_PER_SEC) << " sec." << endl;
+    semi_log << "Граф g1:\n" << g1.to_string();
+    semi_log << "Граф g2:\n" << g2.to_string();
+    t = clock();
   }
 
-  int n = g1.number_of_nodes();
-  if (n != g2.number_of_nodes() ||
-      g1.number_of_edges() != g2.number_of_edges()) {
+  int n1 = g1.number_of_nodes(), n2 = g2.number_of_nodes();
+
+  if (log_mode) {
+    semi_log << "Количество вершин в графе g1: " << n1 << endl;
+    semi_log << "Количество вершин в графе g2: " << n2 << endl;
+  }
+
+  if (n1 != n2) {
+    if (log_mode) {
+      semi_log
+          << "В графах различное количество вершин, поэтому полурешетки не "
+             "изоморфны."
+          << endl;
+    }
     return false;
   }
+
+  int m1 = g1.number_of_edges(), m2 = g2.number_of_edges();
+
+  if (log_mode) {
+    semi_log << "Количество ребер в графе g1: " << m1 << endl;
+    semi_log << "Количество ребер в графе g2: " << m2 << endl;
+  }
+
+  if (m1 != m2) {
+    if (log_mode) {
+      semi_log << "В графах различное количество ребер, поэтому полурешетки не "
+                  "изоморфны."
+               << endl;
+    }
+    return false;
+  }
+
   T r1 = find_root(g1), r2 = find_root(g2);
-  bool g1_is_tree = g1.is_tree_with_root(r1);
-  if (g1_is_tree != g2.is_tree_with_root(r2)) {
-    return false;
-  }
-  if (g1_is_tree) {
-    return tree_is_isomorphic(g1, g2);
+
+  if (log_mode) {
+    semi_log << "Корень в графе g1: " << r1 << endl;
+    semi_log << "Корень в графе g2: " << r2 << endl;
   }
 
-#ifdef DEBUG_PRINTING_FOR_IS_ISOMORPHIC
-  cout << ((float)(clock() - t) / CLOCKS_PER_SEC) << " sec." << endl;
-  cout << "Build digraphs G1 and G2... ";
-  t = clock();
-#endif // DEBUG_PRINTING_FOR_IS_ISOMORPHIC
+  bool g1_is_tree = g1.is_tree_with_root(r1);
+  bool g2_is_tree = g2.is_tree_with_root(r2);
+
+  if (log_mode) {
+    semi_log << "Является ли граф g1 деревом? " << g1_is_tree << endl;
+    semi_log << "Является ли граф g2 деревом? " << g2_is_tree << endl;
+  }
+
+  if (g1_is_tree != g2_is_tree) {
+    if (log_mode) {
+      semi_log
+          << "Один из графов - дерево, а другой нет, поэтому полурешетки не "
+             "изоморфны."
+          << endl;
+    }
+    return false;
+  }
+
+  if (g1_is_tree && g2_is_tree) {
+    if (log_mode) {
+      semi_log << "Оба графа - деревья. Проверка на изоморфизм с помощью "
+                  "алгоритма для деревьев."
+               << endl;
+    }
+    bool res = tree_is_isomorphic(g1, g2);
+    if (log_mode) {
+      semi_log << "Полурешетки имзоморфны? " << res << endl;
+      semi_log << "Полное время проверки полурешеток на изоморфизм: "
+               << ((float)(clock() - start_time) / CLOCKS_PER_SEC) << " sec."
+               << endl;
+    }
+    return res;
+  }
+
+  if (log_mode) {
+    semi_log << "Поиск графов G1 и G2... ";
+    t = clock();
+  }
 
   Digraph<T> g1_G1, g1_G2, g2_G1, g2_G2;
   tie(g1_G1, g1_G2) = find_G1_and_G2_graphs(g1);
@@ -303,7 +367,8 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
 #endif // DEBUG_PRINTING_FOR_IS_ISOMORPHIC
 
   DigraphIso<T, T> digiso(g1_G2, g2_G2, [&](T v, T u) {
-    return inv3_for_g1_G2.get_inv3_for_node(v) == inv3_for_g2_G2.get_inv3_for_node(u);
+    return inv3_for_g1_G2.get_inv3_for_node(v) ==
+           inv3_for_g2_G2.get_inv3_for_node(u);
   });
   // digiso.set_initial_biection({{r1, r2}});
   bool res = digiso.is_iso();
