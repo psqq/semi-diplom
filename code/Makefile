@@ -26,7 +26,12 @@ CFLAGS = --std=c++14 -g -pipe $(MY_DEFINES) $(PROFILER_FLAGS)
 LINK_FLAGS = -pipe $(PROFILER_FLAGS)
 
 #-------------------------------------------------------------------------------
-.PHONY: all clean run_unit_tests t run_bin_tests bt test_sq_semi sqt bt2 run_bin_tests_2 reb
+.PHONY: all reb clean \
+	run_unit_tests t \
+	run_bin_tests bt \
+	test_sq_semi \
+	sqt bt2 run_bin_tests_2 \
+	demo
 
 all: $(BIN)
 
@@ -75,3 +80,7 @@ sqt: test_sq_semi
 
 test_sq_semi: bin_tests/$(BIN)
 	make -C ./bin_tests/ test_sq_semi
+
+#-------------------------------------------------------------------------------
+demo:
+	cd bin_tests && python3 demo.py

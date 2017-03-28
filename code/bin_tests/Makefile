@@ -25,3 +25,7 @@ s2.txt: g2.txt
 
 run_bin_tests_2: s1.txt s2.txt
 	./semi iso s1.txt s2.txt -log -logtofile
+	python3 myformattodot.py g1.txt g1.dot
+	python3 myformattodot.py g2.txt g2.dot
+	dot -Tpng -o g1.png g1.dot
+	dot -Tpng -o g2.png g2.dot
