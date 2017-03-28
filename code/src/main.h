@@ -2,6 +2,6 @@
 #define MAIN_H
 
 extern bool fast_mode, int_mode, log_mode;
-extern bool ostream log;
+extern ofstream semi_log;
 
 #endif /* end of include guard: MAIN_H */

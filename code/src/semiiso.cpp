@@ -9,6 +9,7 @@
 #include <tuple>
 #include <iostream>
 #include <ctime>
+#include "main.h"
 using namespace std;
 
 template <class T> Digraph<T> to_digraph(Semilattice<T> s) {

@@ -32,9 +32,8 @@ LINK_FLAGS = -pipe $(PROFILER_FLAGS)
 all: $(BIN)
 
 clean:
-	rm -f *.o
+	rm -R build || true
 	rm -f $(BIN)
-	rm -f *.gch
 
 #-------------------------------------------------------------------------------
 # depend: .depend
@@ -47,13 +46,15 @@ clean:
 # include .depend
 
 #-------------------------------------------------------------------------------
-$(BIN): $(OBJS)
-	cd build && cmake ..
+$(BIN): $(SRCS)
+	mkdir build || true
+	cd build && cmake .. && make
+	cp build/src/semi ./
 	# cp build/src/semi build/
 	# cp build/tests/tests build/
 
-obj/%.o: src/%.cpp
-	g++ $(CFLAGS) -c $< -o $@
+# obj/%.o: src/%.cpp
+# 	g++ $(CFLAGS) -c $< -o $@
 
 #-------------------------------------------------------------------------------
 t: run_tests
