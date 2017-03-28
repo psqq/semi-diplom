@@ -26,7 +26,7 @@ CFLAGS = --std=c++14 -g -pipe $(MY_DEFINES) $(PROFILER_FLAGS)
 LINK_FLAGS = -pipe $(PROFILER_FLAGS)
 
 #-------------------------------------------------------------------------------
-.PHONY: all clean run_unit_tests t run_bin_tests bt test_sq_semi sqt
+.PHONY: all clean run_unit_tests t run_bin_tests bt test_sq_semi sqt bt2 run_bin_tests_2
 
 all: $(BIN)
 
@@ -58,6 +58,12 @@ bin_tests/$(BIN): $(BIN)
 
 run_bin_tests: bin_tests/$(BIN)
 	cd bin_tests && (sh tests.sh || true)
+
+#-------------------------------------------------------------------------------
+bt2: run_bin_tests_2
+
+run_bin_tests_2: bin_tests/$(BIN)
+	make -C ./bin_tests/ run_bin_tests_2
 
 #-------------------------------------------------------------------------------
 sqt: test_sq_semi

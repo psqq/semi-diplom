@@ -55,15 +55,19 @@ template <class T> int iso() {
   s2 = Semilattice<T>::from_file(cmd_args[1]);
 
   cout << is_isomorphic(s1, s2) << endl;
+  return 0;
 }
 
 template <class T> int tos() {
-  if (count_cmd_args < 1) {
+  if (count_cmd_args < 2) {
     cout << "too few arguments" << endl;
     return 1;
   }
   Digraph<T> g = Digraph<T>::from_file(cmd_args[0]);
   Semilattice<T> s = to_semi(g);
+  ofstream f(cmd_args[1]);
+  f << s.to_string();
+  return 0;
 }
 
 int main(int argc, char **argv) {
