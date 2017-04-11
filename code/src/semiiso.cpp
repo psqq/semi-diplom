@@ -113,6 +113,13 @@ template Semilattice<string> to_semi<string>(Digraph<string> g);
 
 template <class T> Semilattice<T> to_semi(Digraph<T> g) {
   Semilattice<T> s;
+  if (g.number_of_nodes() == 0) {
+    return s;
+  }
+  if (g.number_of_nodes() == 1) {
+    s.add_element(*g.nodes().begin());
+    return s;
+  }
   s.add_elements(g.nodes());
   for (T v : g.nodes()) {
     for (T u : g.nodes()) {
@@ -263,6 +270,26 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
              << ((float)(clock() - start_time) / CLOCKS_PER_SEC) << " sec."
              << endl;
   };
+
+  if (s1.size() != s2.size()) {
+    semi_log << "Полурешетки не изоморфны, т.к. состоят из различного "
+                "количества переменных."
+             << endl;
+    end_of_log(0);
+    return false;
+  }
+
+  if (s1.size() == 0) {
+    semi_log << "Путсые полурешетки изоморфны." << endl;
+    end_of_log(1);
+    return true;
+  }
+
+  if (s1.size() == 1) {
+    semi_log << "Полурешетки, состоящие из одного элемента, изоморфны." << endl;
+    end_of_log(1);
+    return true;
+  }
 
   auto tree_is_isomorphic_with_log = [&](Digraph<T> &g1, string g1_name,
                                          Digraph<T> &g2, string g2_name) {
@@ -430,11 +457,13 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
     semi_log << dt << " sec." << endl;
     semi_log << "Инвариант 3 для каждой из вершин графа g1_G2:" << endl;
     for (T v : g1_G2.nodes()) {
-      semi_log << v << ": '" << inv3_for_g1_G2.get_inv3_for_node(v) << "'" << endl;
+      semi_log << v << ": '" << inv3_for_g1_G2.get_inv3_for_node(v) << "'"
+               << endl;
     }
     semi_log << "Инвариант 3 для каждой из вершин графа g1_G2:" << endl;
     for (T v : g1_G2.nodes()) {
-      semi_log << v << ": '" << inv3_for_g2_G2.get_inv3_for_node(v) << "'" << endl;
+      semi_log << v << ": '" << inv3_for_g2_G2.get_inv3_for_node(v) << "'"
+               << endl;
     }
     semi_log << "Инвариант 3 для графа g1_G2: '"
              << inv3_for_g1_G2.get_full_inv3() << "'" << endl;

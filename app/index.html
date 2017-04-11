@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Main page</title>
+    <style>
+    textarea {
+      width: 300px;
+      height: 150px;
+      font-family: monospace;
+    }
+    tt, pre {
+      background-color: #eee;
+    }
+    pre {
+      display: inline-block;
+    }
+    #iso_full_main_div {
+      display: none;
+    }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+<h1>Проверка полурешеток на изоморфизм</h1>
+
+<p>
+Введите полурешетку S<sub>1</sub>:
+</p>
+
+<textarea id="iso_s1"></textarea>
+
+<p>
+Введите полурешетку S<sub>2</sub>:
+</p>
+
+<textarea id="iso_s2"></textarea>
+
+<br /><br />
+
+<button id="iso_simple_btn">Проверить на изоморфизм</button><br />
+<pre id="iso_simple_res"></pre>
+
+<br /><br />
+
+<button id="iso_full_btn">Проверить на изоморфизм с подробным выводом</button>
+
+<div id="iso_full_main_div">
+<pre id="iso_full_res"></pre>
+</div>
+
+<h1>Преобразование полурешеток в графы</h1>
+
+<p>
+  Пример графа:
+</p>
+
+<pre>
+0 1 2
+1 3
+</pre>
+
+<p>
+  Строка <tt>0 1 2</tt> означает, что в графе есть путь <tt>0 -> 1 -> 2</tt>.
+</p>
+
+<p>
+Введите граф полурешетки:
+</p>
+
+<textarea id="tosemi_in">0 1 2
+1 3</textarea><br />
+<button id="tosemi_btn">Постороить полурешетку</button>
+
+<br /><br />
+
+<textarea id="tosemi_out">0 0 0 0
+0 1 1 1
+0 1 2 1
+0 1 1 3</textarea>
+
+<br /><br /><br /><br />
+
+<script>
+$("#tosemi_btn").click(() => {
+  $.ajax({
+    method: "POST",
+    url: "/tosemi",
+    data: { digraph: $("#tosemi_in").val() }
+  })
+  .done(function( res ) {
+    $("#tosemi_out").val(res);
+  });
+});
+
+$("#iso_simple_btn").click(() => {
+  $.ajax({
+    method: "POST",
+    url: "/iso_simple",
+    data: { s1: $("#iso_s1").val(), s2: $("#iso_s2").val() }
+  })
+  .done(function( res ) {
+    var s = res;
+    if (res == "0") {
+      s = "Полурешетки не изоморфны";
+    } else if (res == "1") {
+      s = "Полурешетки изоморфны";
+    }
+    $("#iso_simple_res").text(s);
+  });
+});
+
+$("#iso_full_btn").click(() => {
+  $.ajax({
+    method: "POST",
+    url: "/iso_full",
+    data: { s1: $("#iso_s1").val(), s2: $("#iso_s2").val() }
+  })
+  .done(function( s ) {
+    $("#iso_full_main_div").show();
+    $("#iso_full_res").text(s);
+  });
+});
+</script>
+
+</body>
+
+</html>

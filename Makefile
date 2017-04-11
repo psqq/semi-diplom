@@ -1,4 +1,11 @@
 
-all:
+all: prepare app/semi
+
+prepare:
 	make -C code
-	make -C latex
+
+app/semi: code/semi
+	cp code/semi app/
+
+runapp:
+	cd app; node main.js
