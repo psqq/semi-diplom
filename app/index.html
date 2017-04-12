@@ -54,9 +54,7 @@
 
 <button id="iso_full_btn">Проверить на изоморфизм с подробным выводом</button>
 
-<div id="iso_full_main_div">
-<pre id="iso_full_res"></pre>
-</div>
+<div id="iso_full_main_div"></div>
 
 <h1>Преобразование графов в полурешетки</h1>
 
@@ -197,7 +195,6 @@ FullIso.prototype.append_graph_img = function (id) {
       break;
     }
   }
-  console.log(g);
   $("#iso_full_main_div").append(`<pre>${this.t}</pre>`);
   $("#iso_full_main_div").append(`<div id="iso_full_img_con_${id}"></div>`);
   viz_graph_append(g, id, `#iso_full_img_con_${id}`);
@@ -211,12 +208,12 @@ $("#iso_full_btn").click(() => {
     data: { s1: $("#iso_s1").val(), s2: $("#iso_s2").val() }
   })
   .done(function(s) {
+    $("#iso_full_main_div").empty();
     new FullIso(s).go();
   });
 });
 
 $("#viz_btn").click(() => {
-  $("#viz_out").empty();
   viz_graph_append($("#viz_in").val(), "#viz_out");
 });
 </script>

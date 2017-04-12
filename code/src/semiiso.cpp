@@ -461,7 +461,7 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
                << endl;
     }
     semi_log << "Инвариант 3 для каждой из вершин графа g1_G2:" << endl;
-    for (T v : g1_G2.nodes()) {
+    for (T v : g2_G2.nodes()) {
       semi_log << v << ": '" << inv3_for_g2_G2.get_inv3_for_node(v) << "'"
                << endl;
     }
