@@ -1,3 +1,5 @@
 node_modules
 semi
 *.png
+*.txt
+*.dot

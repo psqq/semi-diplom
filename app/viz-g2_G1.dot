@@ -1,4 +1,0 @@
-digraph {
-node [ shape=circle ]
-rankdir = BT
-}
