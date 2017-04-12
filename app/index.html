@@ -16,11 +16,9 @@
     pre {
       display: inline-block;
     }
-    #iso_full_main_div {
-      display: none;
-    }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
 </head>
 
 <body>
@@ -31,13 +29,21 @@
 Введите полурешетку S<sub>1</sub>:
 </p>
 
-<textarea id="iso_s1"></textarea>
+<textarea id="iso_s1">0 0 0 0 0
+0 1 1 0 0
+0 1 2 3 0
+0 0 3 3 0
+0 0 0 0 4</textarea>
 
 <p>
 Введите полурешетку S<sub>2</sub>:
 </p>
 
-<textarea id="iso_s2"></textarea>
+<textarea id="iso_s2">0 1 2 4 4
+1 1 4 4 4
+2 4 2 4 4
+4 4 4 3 4
+4 4 4 4 4</textarea>
 
 <br /><br />
 
@@ -52,7 +58,7 @@
 <pre id="iso_full_res"></pre>
 </div>
 
-<h1>Преобразование полурешеток в графы</h1>
+<h1>Преобразование графов в полурешетки</h1>
 
 <p>
   Пример графа:
@@ -81,6 +87,16 @@
 0 1 1 1
 0 1 2 1
 0 1 1 3</textarea>
+
+<h1>Визуализатор графов (graphviz)</h1>
+
+<textarea id="viz_in">0 1 2
+1 3</textarea><br />
+<button id="viz_btn">Получить изображение</button>
+
+<br /><br />
+
+<div id="viz_out"></div>
 
 <br /><br /><br /><br />
 
@@ -113,16 +129,95 @@ $("#iso_simple_btn").click(() => {
   });
 });
 
+function viz_graph(g, id, cb) {
+  if (arguments.length == 2) {
+    cb = id;
+    id = undefined;
+  }
+  $.ajax({
+    method: "POST",
+    url: "/viz",
+    data: { digraph: g, id: id }
+  })
+  .done(function(img_id) {
+    cb(img_id);
+  });
+}
+
+function viz_graph_append(g, id, dst) {
+  if (arguments.length == 2) {
+    dst = id;
+    id = undefined;
+  }
+  viz_graph(g, id, (img_id) => {
+    $(dst).append(`<img src="/get_image/${img_id}" />`);
+  });
+}
+
+function FullIso(s) {
+  this.s = s;
+  this.lines = _.split(s, "\n");
+  this.i = 0;
+  this.t = "";
+}
+
+FullIso.prototype.go = function () {
+  var IDS = ["g1", "g2", "g1_G1", "g1_G2", "g2_G1", "g2_G2"];
+  while (1) {
+    if (this.i >= this.lines.length) {
+      break;
+    }
+    var line = this.lines[this.i++];
+    this.t += line + "\n";
+    for (var id of IDS) {
+      var r = new RegExp(`^Граф ${id}:`);
+      if (r.test(line)) {
+        this.append_graph_img(id);
+        break;
+      }
+    }
+  }
+  // $("#iso_full_main_div").append();
+  // console.log(lines);
+  $("#iso_full_main_div").append(`<pre>${this.t}</pre>`);
+};
+
+FullIso.prototype.append_graph_img = function (id) {
+  var g = "", t;
+  while (1) {
+    if (this.i >= this.lines.length) {
+      break;
+    }
+    line = this.lines[this.i++];
+    if (/^[ ]*\d/.test(line)) {
+      this.t += line + "\n";
+      g += line + "\n";
+    } else {
+      this.i--;
+      break;
+    }
+  }
+  console.log(g);
+  $("#iso_full_main_div").append(`<pre>${this.t}</pre>`);
+  $("#iso_full_main_div").append(`<div id="iso_full_img_con_${id}"></div>`);
+  viz_graph_append(g, id, `#iso_full_img_con_${id}`);
+  this.t = "";
+};
+
 $("#iso_full_btn").click(() => {
   $.ajax({
     method: "POST",
     url: "/iso_full",
     data: { s1: $("#iso_s1").val(), s2: $("#iso_s2").val() }
   })
-  .done(function( s ) {
-    $("#iso_full_main_div").show();
-    $("#iso_full_res").text(s);
+  .done(function(s) {
+    new FullIso(s).go();
   });
+});
+
+$("#viz_btn").click(() => {
+  $("#viz_out").empty();
+  viz_graph_append($("#viz_in").val(), "#viz_out");
 });
 </script>
 

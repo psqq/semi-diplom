@@ -12,6 +12,7 @@ semi iso f1 f2 - проверить полурешетки из файлов f1 
 semi tos f1 - преобразует орграф из файла f1 в полурешетку.
 semi tog f1 - преобразует полурешетку из файла f1 в орграф.
 semi giso f1 f2 - проверить орграфы из файлов f1 и f2 на изоморфизм.
+semi todot f1 - преобразует орграф в формат .dot файл для graphviz.
 
 -log - добавьте этот флаг для ведения программой подробного лога. Все
 данные будут записываться в файл log.txt. Если такой файл существует, то
@@ -71,9 +72,33 @@ template <class T> int tos() {
   return 0;
 }
 
+template <class T> int todot() {
+  if (count_cmd_args < 1) {
+    cout << "too few arguments" << endl;
+    return 1;
+  }
+  Digraph<T> g = Digraph<T>::from_file(cmd_args[0]);
+  ostream *ost = &cout;
+  ofstream fout;
+  if (count_cmd_args == 2) {
+    fout.open(cmd_args[1]);
+    ost = &fout;
+  }
+  ostream &os = *ost;
+  os << R"EOF(digraph {
+node [ shape=circle ]
+rankdir = BT
+)EOF";
+  for (auto p : g.edges()) {
+    os << p.first << " -> " << p.second << endl;
+  }
+  os << "}" << endl;
+  return 0;
+}
+
 int main(int argc, char **argv) {
   parse_args(argc, argv);
-  set<string> all_cmds = {"iso", "tos", "tog", "giso"};
+  set<string> all_cmds = {"iso", "tos", "tog", "giso", "todot"};
 
   // cout << "cmd: " << cmd << endl;
   // cout << "cmd_args: " << cmd_args << endl;
@@ -119,6 +144,13 @@ int main(int argc, char **argv) {
           return tos<int>();
         } else {
           return tos<string>();
+        }
+        return 0;
+      } else if (cmd == "todot") {
+        if (int_mode) {
+          return todot<int>();
+        } else {
+          return todot<string>();
         }
         return 0;
       }

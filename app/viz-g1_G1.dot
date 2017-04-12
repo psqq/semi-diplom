@@ -1,0 +1,5 @@
+digraph {
+node [ shape=circle ]
+rankdir = BT
+0 -> 4
+}
