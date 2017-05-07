@@ -21,6 +21,8 @@ semi todot f1 - преобразует орграф в формат .dot фай�
 -int - используйте этот флаг, когда все элементы - целые числа, иначе элементами
 будут строки.
 
+-str - элементы графов и полурешеток - строки.
+
 -fast - этот флаг нужен для отключения различных проверок на ошибки. Также не
 будут доступны произвольные имена для элементов орграфов и полурешеток. Все
 элементы должны именоваться следующим образом: 0, 1, 2, ..., n-2, n-1,
@@ -72,6 +74,26 @@ template <class T> int tos() {
   return 0;
 }
 
+template <class T> int tog() {
+  if (count_cmd_args < 1) {
+    cout << "too few arguments" << endl;
+    return 1;
+  }
+  Semilattice<T> s = Semilattice<T>::from_file(cmd_args[0]);
+  Digraph<T> g = to_digraph(s);
+
+  ostream *ost = &cout;
+  ofstream fout;
+  if (count_cmd_args == 2) {
+    fout.open(cmd_args[1]);
+    ost = &fout;
+  }
+  ostream &os = *ost;
+
+  os << g.to_string();
+  return 0;
+}
+
 template <class T> int todot() {
   if (count_cmd_args < 1) {
     cout << "too few arguments" << endl;
@@ -89,8 +111,15 @@ template <class T> int todot() {
 node [ shape=circle ]
 rankdir = BT
 )EOF";
+  set<T> used;
   for (auto p : g.edges()) {
     os << p.first << " -> " << p.second << endl;
+    used.insert(p.first);
+    used.insert(p.second);
+  }
+  for (auto v : g.nodes()) {
+    if (used.find(v) != used.end()) continue;
+    os << v << endl;
   }
   os << "}" << endl;
   return 0;
@@ -110,11 +139,15 @@ int main(int argc, char **argv) {
 
   // cout << "log_mode: " << log_mode << endl;
 
+  int_mode = true;
+
   for (string flag : cmd_flags) {
     if (flag == "-fast") {
       fast_mode = true;
     } else if (flag == "-int") {
       int_mode = true;
+    } else if (flag == "-str") {
+      int_mode = false;
     } else if (flag == "-log") {
       log_mode = true;
       semi_log.log = true;
@@ -144,6 +177,13 @@ int main(int argc, char **argv) {
           return tos<int>();
         } else {
           return tos<string>();
+        }
+        return 0;
+      } else if (cmd == "tog") {
+        if (int_mode) {
+          return tog<int>();
+        } else {
+          return tog<string>();
         }
         return 0;
       } else if (cmd == "todot") {

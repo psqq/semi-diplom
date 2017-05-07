@@ -5,7 +5,7 @@ MAKE_SEMILATTICES_SRCS = make_semilattices.cpp
 #-------------------------------------------------------------------------------
 .PHONY: all clean
 
-all: $(MAKE_SEMILATTICES_BIN)
+all: $(MAKE_SEMILATTICES_BIN) semi
 
 clean:
 	rm -R
@@ -25,3 +25,6 @@ semigroups: semigroups_1_7.tar.gz
 semilattices: semigroups $(MAKE_SEMILATTICES_BIN)
 	mkdir semilattices || true
 	./$(MAKE_SEMILATTICES_BIN) 1 2 3 4 5 6 7 > totals.txt
+
+images: images.py semi
+	python3.5 images.py 1 2 3 4 5 6 7
