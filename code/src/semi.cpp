@@ -16,8 +16,10 @@ semi tos f1 - преобразует орграф из файла f1 в полу
 semi tog f1 - преобразует полурешетку из файла f1 в орграф.
 semi giso f1 f2 - проверить орграфы из файлов f1 и f2 на изоморфизм.
 semi todot f1 - преобразует орграф в формат .dot файл для graphviz.
-semi inv3 s.txt - выводит инвариант 3 для полурешетки из файла s.txt
-semi ginv3 g.txt - выводит инвариант 3 для графа полурешетки из файла g.txt
+semi inv3 s.txt - выводит инвариант 3 для полурешетки из файла s.txt.
+semi ginv3 g.txt - выводит инвариант 3 для графа полурешетки из файла g.txt.
+semi istree s.txt - является ли граф полурешетки деревом
+semi gistree g.txt - тоже самое только для графа полурешетки
 
 -speed - выводит время выполнения программы (в секундах): "speed: 0.023"
 
@@ -79,14 +81,16 @@ template <class T> int iso() {
 }
 
 template <class T> int tos() {
-  if (count_cmd_args < 2) {
+  if (count_cmd_args < 1) {
     cout << "too few arguments" << endl;
     return 1;
   }
   Digraph<T> g = Digraph<T>::from_file(cmd_args[0]);
   Semilattice<T> s = to_semi(g);
-  ofstream f(cmd_args[1]);
-  f << s.to_string();
+
+  USE_FILE_FOR_OUTPUT_IF_EXISTS(1, os);
+
+  os << s.to_string();
   return 0;
 }
 
@@ -145,7 +149,7 @@ template <class T> int inv3() {
 
   Inv3<T> inv3_for_g(g);
 
-  os << inv3_for_g.get_full_inv3();
+  os << inv3_for_g.get_full_inv3() << endl;
 }
 
 template <class T> int ginv3() {
@@ -159,7 +163,34 @@ template <class T> int ginv3() {
 
   Inv3<T> inv3_for_g(g);
 
-  os << inv3_for_g.get_full_inv3();
+  os << inv3_for_g.get_full_inv3() << endl;
+}
+
+template <class T> int istree() {
+  if (count_cmd_args < 1) {
+    cout << "too few arguments" << endl;
+    return 1;
+  }
+  Semilattice<T> s = Semilattice<T>::from_file(cmd_args[0]);
+  Digraph<T> g = to_digraph(s);
+  T r = find_root(g);
+
+  USE_FILE_FOR_OUTPUT_IF_EXISTS(1, os);
+
+  os << g.is_tree_with_root(r) << endl;
+}
+
+template <class T> int gistree() {
+  if (count_cmd_args < 1) {
+    cout << "too few arguments" << endl;
+    return 1;
+  }
+  Digraph<T> g = Digraph<T>::from_file(cmd_args[0]);
+  T r = find_root(g);
+
+  USE_FILE_FOR_OUTPUT_IF_EXISTS(1, os);
+
+  os << g.is_tree_with_root(r) << endl;
 }
 
 int main(int argc, char **argv) {
@@ -199,6 +230,7 @@ int main(int argc, char **argv) {
 
     map<string, vector<function<int()>>> cmds = {
       CMD(iso), CMD(tos), CMD(tog), CMD(todot), CMD(inv3), CMD(ginv3),
+      CMD(istree), CMD(gistree),
     };
 
 #undef CMD
@@ -224,5 +256,6 @@ int main(int argc, char **argv) {
     cout << "Unknow error!" << endl;
     return 1;
   }
+
   return 0;
 }
