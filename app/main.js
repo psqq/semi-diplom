@@ -104,3 +104,4 @@ app
   .use(router.allowedMethods());
 
 app.listen(3497);
+console.log('local link: http://localhost:3497');
