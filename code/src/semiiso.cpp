@@ -395,6 +395,14 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
     if (log_mode) {
       semi_log << "Оба графа - деревья." << endl;
       bool res = tree_is_isomorphic_with_log(g1, "g1", g2, "g2");
+      if (res) {
+        TreeIso<T> treeiso(g1, g2);
+        auto b = treeiso.get_biection();
+        semi_log << "Графы изоморфны. Биекция:\n";
+        for (auto p : b) {
+          semi_log << p.first << " <-> " << p.second << endl;
+        }
+      }
       end_of_log(res);
       return res;
     } else {
