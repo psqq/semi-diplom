@@ -8,7 +8,8 @@ tests.o: tests.cpp cxxtest/TestListener.h cxxtest/Descriptions.h \
  ../src/digraph.h ../src/exceptions.h ../src/digraphiso.h \
  ../src/digraph.h ../src/exceptions.h ../src/semiiso.h \
  ../src/semilattice.h ../src/semilattice.h ../src/inv3.h ../src/semiiso.h \
- cxxtest/Root.cpp cxxtest/ValueTraits.cpp cxxtest/Descriptions.cpp \
- cxxtest/DummyDescriptions.cpp cxxtest/GlobalFixture.cpp \
- cxxtest/LinkedList.cpp cxxtest/RealDescriptions.cpp \
- cxxtest/TestSuite.cpp cxxtest/TestTracker.cpp
+ ../src/utils.h cxxtest/Root.cpp cxxtest/ValueTraits.cpp \
+ cxxtest/Descriptions.cpp cxxtest/DummyDescriptions.cpp \
+ cxxtest/GlobalFixture.cpp cxxtest/LinkedList.cpp \
+ cxxtest/RealDescriptions.cpp cxxtest/TestSuite.cpp \
+ cxxtest/TestTracker.cpp

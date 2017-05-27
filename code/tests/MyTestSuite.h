@@ -679,6 +679,8 @@ public:
       3 0
       3 2
     )");
+    // cout << endl << encode_tree(g1) << endl;
+    // cout << endl << encode_tree(g2) << endl;
     TS_ASSERT_EQUALS(encode_tree(g1), encode_tree(g2));
   }
 };

@@ -31,15 +31,21 @@ LINK_FLAGS = -pipe $(PROFILER_FLAGS)
 	run_bin_tests bt \
 	test_sq_semi \
 	sqt bt2 run_bin_tests_2 \
-	demo
+	demo build
 
-all: $(BIN)
+all: build
 
 clean:
 	rm -R build || true
 	rm -f $(BIN) $(TESTS_BIN)
 
 #-------------------------------------------------------------------------------
+build:
+	mkdir build || true
+	cd tests && make
+	cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make
+	cp build/src/semi ./
+
 $(BIN): $(SRCS)
 	mkdir build || true
 	cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make

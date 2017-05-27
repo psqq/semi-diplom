@@ -5,15 +5,15 @@ CFLAGS = --std=c++14 -I. -I../src/
 
 .PHONY: run_tests all
 
-all: depend $(BIN)
+all: tests.cpp
 
-depend: .depend
-
-.depend: tests.cpp
-	rm -f .depend
-	g++ $(CFLAGS) -MM tests.cpp > .depend
-
-include .depend
+# depend: .depend
+#
+# .depend: tests.cpp
+# 	rm -f .depend
+# 	g++ $(CFLAGS) -MM tests.cpp > .depend
+#
+# include .depend
 
 tests.cpp: MyTestSuite.h
 	cxxtestgen --error-printer -o tests.cpp MyTestSuite.h

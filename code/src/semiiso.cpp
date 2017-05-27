@@ -136,8 +136,13 @@ template <class T> string encode_tree(Digraph<T> g) {
   T root = find_root(g);
   function<string(T)> go = [&](T v) -> string {
     string s = "0";
+    vector<string> res;
     for (T u : g.successors(v)) {
-      s += go(u);
+      res.push_back(go(u));
+    }
+    sort(res.begin(), res.end());
+    for (auto t : res) {
+      s += t;
     }
     return s + "1";
   };
