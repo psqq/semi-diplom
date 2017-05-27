@@ -302,9 +302,9 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
     semi_log << "Код графа " << g1_name << ": '" << s1 << "'" << endl;
     semi_log << "Код графа " << g2_name << ": '" << s2 << "'" << endl;
     if (res) {
-      semi_log << "Строки равны следовательно графы изоморфны." << endl;
+      semi_log << "Строки равны." << endl;
     } else {
-      semi_log << "Строки не равны следовательно графы не изоморфны." << endl;
+      semi_log << "Строки не равны => графы не изоморфны." << endl;
     }
     return res;
   };

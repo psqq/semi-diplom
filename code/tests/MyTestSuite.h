@@ -661,4 +661,24 @@ public:
     //   0 3
     // )");
   }
+
+  //----------------------------------------------------------------------------
+  // TREE ENCODER TESTS
+  //----------------------------------------------------------------------------
+  void test_TreeEncoder() {
+    Digraph<int> g1, g2;
+    g1 = Digraph<int>::from_string(R"(
+      0 1
+      0 2
+      2 3
+      2 4
+    )");
+    g2 = Digraph<int>::from_string(R"(
+      0 1
+      0 4
+      3 0
+      3 2
+    )");
+    TS_ASSERT_EQUALS(encode_tree(g1), encode_tree(g2));
+  }
 };
