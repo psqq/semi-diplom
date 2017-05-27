@@ -4,6 +4,7 @@
 #include "main.h"
 #include "semiiso.h"
 #include "semilog.h"
+#include "treeiso.h"
 #include <algorithm>
 #include <ctime>
 #include <fstream>
@@ -509,6 +510,10 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
   if (log_mode && res) {
     semi_log << "Графы изоморфны. Биекция:\n";
     map<T, T> b = digiso.get_biection();
+    TreeIso<T> treeiso(g1_G1, g2_G1);
+    for (auto p : treeiso.get_biection()) {
+      b[p.first] = p.second;
+    }
     for (auto p : b) {
       semi_log << p.first << " <-> " << p.second << endl;
     }

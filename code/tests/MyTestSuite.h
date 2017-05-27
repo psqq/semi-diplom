@@ -2,9 +2,9 @@
 #include "digraph.h"
 #include "digraphiso.h"
 #include "exceptions.h"
+#include "inv3.h"
 #include "semiiso.h"
 #include "semilattice.h"
-#include "inv3.h"
 #include "utils.h"
 #include <cstdlib>
 #include <set>
@@ -683,4 +683,31 @@ public:
     // cout << endl << encode_tree(g2) << endl;
     TS_ASSERT_EQUALS(encode_tree(g1), encode_tree(g2));
   }
+
+  //----------------------------------------------------------------------------
+  // HARD TESTS
+  //----------------------------------------------------------------------------
+  // void hard_test_1() {
+  //   Semilattice<int> s1, s2;
+  //   s1 = Semilattice<int>::from_string(R"(
+  //     0 0 0 0 0
+  //     0 1 1 0 0
+  //     0 1 2 3 0
+  //     0 0 3 3 0
+  //     0 0 0 0 4
+  //   )");
+  //   s2 = Semilattice<int>::from_string(R"(
+  //     0 2 2 3 4
+  //     2 1 2 2 2
+  //     2 2 2 2 2
+  //     3 2 2 3 2
+  //     4 2 2 2 4
+  //   )");
+  //   TS_ASSERT(is_isomorphic(s1, s2));
+  //   map<int, set<int>> ans = {
+  //       {0, {2}}, {4, {1}}, {1, {3, 4}}, {3, {3, 4}}, {2, {0}},
+  //   };
+  //   for (auto p : ans) {
+  //   }
+  // }
 };
