@@ -28,7 +28,7 @@ def semi(cmd, s):
     tmp_file_in = "/tmp/in.txt"
     tmp_file_out = "/tmp/out.txt"
     with open(tmp_file_in, "w") as f:
-        f.write(" ".join(list(s)))
+        f.write(" ".join(list(s)) + "\n")
     call("semi {} {} {}".format(cmd, tmp_file_in, tmp_file_out), shell=True)
     with open(tmp_file_out, "r") as f:
         return f.read().strip()
@@ -91,5 +91,69 @@ def count_trees():
                 c += 1
         print(n, c)
 
+# count_trees()
 
-count_trees()
+"""
+1 1
+2 1
+3 2
+4 4
+5 9
+6 20
+7 48
+8 115
+"""
+
+def find_semilattices_with_equal_ccode():
+    for n in range(1, 9):
+        m = dict()
+        for s in semilattices_list(n):
+            # print(s)
+            inv3 = semi("ccode", s)
+            if inv3 not in m:
+                m[inv3] = []
+            m[inv3].append(" ".join(list(s)))
+        maxlen = 0
+        maxinv3 = ""
+        for k in m:
+            if len(m[k]) > maxlen:
+                maxlen = len(m[k])
+                maxinv3 = k
+        print(n, maxlen, repr(maxinv3), m[maxinv3])
+
+# find_semilattices_with_equal_ccode()
+
+"""
+1 1 '01' ['1']
+2 1 '0011' ['1 1 1 2']
+3 1 '001011' ['1 1 1 1 2 1 1 1 3']
+4 1 '00010111' ['1 1 1 1 1 2 2 2 1 2 3 2 1 2 2 4']
+5 1 '00011001100111' ['1 1 1 1 1 1 2 1 1 2 1 1 3 1 3 1 1 1 4 4 1 2 3 4 5']
+6 2 '0001011001100111' ['1 1 1 1 1 1 1 2 1 1 1 2 1 1 3 1 1 3 1 1 1 4 4 4 1 1 1 4 5 4 1 2 3 4 4 6', '1 1 1 1 1 1 1 2 1 1 1 2 1 1 3 1 3 1 1 1 1 4 4 4 1 1 3 4 5 4 1 2 1 4 4 6']
+7 3 '000011011001100111' ['1 1 1 1 1 1 1 1 2 1 1 1 1 2 1 1 3 1 1 1 3 1 1 1 4 4 4 4 1 1 1 4 5 4 4 1 1 1 4 4 6 6 1 2 3 4 4 6 7', '1 1 1 1 1 1 1 1 2 1 1 1 1 2 1 1 3 1 1 1 3 1 1 1 4 4 4 4 1 1 1 4 5 5 4 1 1 1 4 5 6 4 1 2 3 4 4 4 7', '1 1 1 1 1 1 1 1 2 1 1 1 1 2 1 1 3 1 1 3 1 1 1 1 4 4 4 4 1 1 1 4 5 4 5 1 1 3 4 4 6 4 1 2 1 4 5 4 7']
+8 6 '00001101100101100111' ['1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 2 1 1 3 1 1 1 3 3 1 1 1 4 4 4 1 4 1 1 1 4 5 4 1 4 1 1 1 4 4 6 1 6 1 1 3 1 1 1 7 3 1 2 3 4 4 6 3 8', '1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 2 1 1 3 1 1 1 3 3 1 1 1 4 4 4 1 4 1 1 1 4 5 5 1 4 1 1 1 4 5 6 1 4 1 1 3 1 1 1 7 3 1 2 3 4 4 4 3 8', '1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 2 1 1 3 1 1 1 3 3 1 1 1 4 4 4 4 1 1 1 1 4 5 4 4 1 1 1 1 4 4 6 6 1 1 1 3 4 4 6 7 3 1 2 3 1 1 1 3 8', '1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 2 1 1 3 1 1 1 3 3 1 1 1 4 4 4 4 1 1 1 1 4 5 5 4 1 1 1 1 4 5 6 4 1 1 1 3 4 4 4 7 3 1 2 3 1 1 1 3 8', '1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 2 1 1 3 1 1 3 3 1 1 1 1 4 4 1 4 4 1 1 1 4 5 1 4 5 1 1 3 1 1 6 3 1 1 1 3 4 4 3 7 4 1 2 1 4 5 1 4 8', '1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 2 1 1 3 1 1 3 3 1 1 1 1 4 4 1 4 4 1 1 1 4 5 1 5 4 1 1 3 1 1 6 3 1 1 1 3 4 5 3 7 4 1 2 1 4 4 1 4 8']
+"""
+
+def find_semilattices_with_equal_ccode_and_inv3():
+    for n in range(1, 9):
+        m = dict()
+        for s in semilattices_list(n):
+            # print(s)
+            ccode = semi("ccode", s)
+            inv3 = semi("inv3", s)
+            p = (ccode, inv3)
+            if inv3 not in m:
+                m[p] = []
+            m[p].append(" ".join(list(s)))
+        maxlen = 0
+        maxkey = ""
+        for k in m:
+            if len(m[k]) > maxlen:
+                maxlen = len(m[k])
+                maxkey = k
+        print(n, maxlen, repr(maxkey), m[maxkey])
+
+find_semilattices_with_equal_ccode_and_inv3()
+
+"""
+"""

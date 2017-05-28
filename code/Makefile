@@ -42,7 +42,7 @@ clean:
 #-------------------------------------------------------------------------------
 build:
 	mkdir build || true
-	cd tests && make
+	make -C tests
 	cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make
 	cp build/src/semi ./
 
@@ -51,10 +51,10 @@ $(BIN): $(SRCS)
 	cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make
 	cp build/src/semi ./
 
-reb: clean
-	mkdir build || true
-	cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make
-	cp build/src/semi ./
+reb: clean build
+	# mkdir build || true
+	# cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make
+	# cp build/src/semi ./
 
 #-------------------------------------------------------------------------------
 t: run_unit_tests

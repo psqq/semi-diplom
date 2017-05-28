@@ -53,6 +53,7 @@ public:
   std::vector<std::pair<T, T>> edges();
   std::vector<T> successors(T v);
   std::vector<T> predecessors(T v);
+  std::vector<T> leaves();
   int number_of_nodes();
   int number_of_edges();
   bool is_tree_with_root(T root);

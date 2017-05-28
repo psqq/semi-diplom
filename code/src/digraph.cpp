@@ -252,6 +252,16 @@ template <class T> vector<T> Digraph<T>::predecessors(T v) {
   return res;
 }
 
+template <class T> vector<T> Digraph<T>::leaves() {
+  vector<T> res;
+  for (T v : _elements) {
+    if (successors(v).size() == 0) {
+      res.push_back(v);
+    }
+  }
+  return res;
+}
+
 template <class T> int Digraph<T>::number_of_nodes() {
   return simple_digraph.number_of_nodes();
 }

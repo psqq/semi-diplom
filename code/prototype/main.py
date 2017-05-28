@@ -1,7 +1,7 @@
 from digraph import *
 from semi import *
 
-n = 8
+n = 3
 vs = []
 k = 0
 for i in range(n):

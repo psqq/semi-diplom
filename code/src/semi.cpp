@@ -1,13 +1,15 @@
+#include "inv3.h"
 #include "main.h"
 #include "semiiso.h"
 #include "semilog.h"
+#include "treeiso.h"
 #include "utils.h"
-#include "inv3.h"
+#include <chrono>
 #include <cstring>
 #include <fstream>
-#include <set>
-#include <map>
 #include <functional>
+#include <map>
+#include <set>
 using namespace std;
 
 const char *usage_ru = R"EOF(Usage help:
@@ -22,7 +24,7 @@ semi istree s.txt - является ли граф полурешетки дер
 semi gistree g.txt - тоже самое только для графа полурешетки
 semi ccode g.txt - выводит канонический код графа
 
--speed - выводит время выполнения программы (в секундах): "speed: 0.023"
+-time - выводит время выполнения программы (в секундах): "time: 0.023"
 
 -log - добавьте этот флаг для ведения программой подробного лога. Все
 данные будут записываться в файл log.txt. Если такой файл существует, то
@@ -58,14 +60,14 @@ void parse_args(int argc, char **argv) {
   count_cmd_args = cmd_args.size();
 }
 
-#define USE_FILE_FOR_OUTPUT_IF_EXISTS(cmd_args_index, osvar) \
-  ostream *osvar ## _ost = &cout; \
-  ofstream osvar ## _fout; \
-  if (cmd_args_index < count_cmd_args) { \
-    osvar ## _fout.open(cmd_args[cmd_args_index]); \
-    osvar ## _ost = & osvar ## _fout; \
-  } \
-  ostream &osvar = *osvar ## _ost
+#define USE_FILE_FOR_OUTPUT_IF_EXISTS(cmd_args_index, osvar)                   \
+  ostream *osvar##_ost = &cout;                                                \
+  ofstream osvar##_fout;                                                       \
+  if (cmd_args_index < count_cmd_args) {                                       \
+    osvar##_fout.open(cmd_args[cmd_args_index]);                               \
+    osvar##_ost = &osvar##_fout;                                               \
+  }                                                                            \
+  ostream &osvar = *osvar##_ost
 
 template <class T> int iso() {
   if (count_cmd_args < 2) {
@@ -167,6 +169,21 @@ template <class T> int ginv3() {
   os << inv3_for_g.get_full_inv3() << endl;
 }
 
+template <class T> int ccode() {
+  if (count_cmd_args < 1) {
+    cout << "too few arguments" << endl;
+    return 1;
+  }
+  Semilattice<T> s = Semilattice<T>::from_file(cmd_args[0]);
+  Digraph<T> g = to_digraph(s);
+
+  USE_FILE_FOR_OUTPUT_IF_EXISTS(1, os);
+
+  TreeEncoder<T> e(g);
+
+  os << e.code() << endl;
+}
+
 template <class T> int istree() {
   if (count_cmd_args < 1) {
     cout << "too few arguments" << endl;
@@ -192,6 +209,189 @@ template <class T> int gistree() {
   USE_FILE_FOR_OUTPUT_IF_EXISTS(1, os);
 
   os << g.is_tree_with_root(r) << endl;
+}
+
+template <class T> int gen1() {
+  if (count_cmd_args < 1) {
+    cout << "too few arguments" << endl;
+    return 1;
+  }
+  int print_type = 0;
+  if (count_cmd_args > 1) {
+    stringstream ss;
+    ss << cmd_args[1];
+    int f;
+    ss >> f;
+    print_type = f;
+  }
+  stringstream ss;
+  ss << cmd_args[0];
+  int a, aa;
+  ss >> a;
+  aa = a * a;
+  Digraph<int> g;
+  vector<int> nodes(aa);
+  for (int i = 0; i < aa; i++) {
+    nodes[i] = i;
+  }
+  unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+  shuffle(nodes.begin(), nodes.end(), std::default_random_engine(seed));
+  for (int i = 0; i < a; i++) {
+    for (int j = 0; j < a; j++) {
+      if (i + 1 < a) {
+        g.add_edge(nodes[i * a + j], nodes[(i + 1) * a + j]);
+      }
+      if (j + 1 < a) {
+        g.add_edge(nodes[i * a + j], nodes[i * a + j + 1]);
+      }
+    }
+  }
+  // USE_FILE_FOR_OUTPUT_IF_EXISTS(1, os);
+  auto &os = cout;
+  if (print_type == 1) {
+    os << g.to_string() << endl;
+    return 0;
+  }
+  Semilattice<int> s = to_semi(g);
+  os << s.to_string() << endl;
+  if (print_type == 2) {
+    os << g.to_string() << endl;
+  }
+}
+
+template <class T> int gen2() {
+  if (count_cmd_args < 1) {
+    cout << "too few arguments" << endl;
+    return 1;
+  }
+
+  auto &os = cout;
+  int count_iters = -1;
+
+loop:
+  try {
+    srand(time(0));
+
+    stringstream ss;
+    for (int i = 0; i < cmd_args.size(); i++) {
+      ss << cmd_args[i] << " ";
+    }
+
+    int print_type;
+    int n, m, N, M;
+    int min_add_edges, max_add_edges;
+    int min_add_nodes, max_add_nodes;
+    int max_nodes_for_iter, random_edges;
+
+    ss >> print_type;
+    ss >> n >> m;
+    ss >> min_add_edges >> max_add_edges;
+    if (count_iters < 0) {
+      ss >> count_iters;
+    }
+    // ss >> min_add_nodes >> max_add_nodes;
+    // ss >> random_edges;
+    N = n;
+    M = m;
+
+    vector<int> nodes(n);
+    for (int i = 0; i < n; i++) {
+      nodes[i] = i;
+    }
+    unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+    shuffle(nodes.begin(), nodes.end(), std::default_random_engine(seed));
+
+    random_edges = m - (n - 1);
+
+    semi_log << "Генерация случайной полурешетки." << endl;
+    semi_log << "nodes: " << nodes << endl;
+    semi_log << "n, m: " << n << " " << m << endl;
+    semi_log << "Количество случайных ребер: " << random_edges << endl;
+
+    m -= random_edges;
+
+    Digraph<int> g;
+    vector<int> leaves;
+    g.add_node(nodes[0]);
+    leaves = g.leaves();
+    // cout << leaves << endl;
+    int cur_node = 1;
+    n--;
+
+    semi_log << "Создания случайного дерева..." << endl;
+    while (n > 0) {
+      int k = rand() % leaves.size();
+      int u = leaves[k];
+      int e = min_add_edges + rand() % (max_add_edges - min_add_edges + 1);
+      e = min(m, e);
+      semi_log << "Добавление " << e << " случайных ребер." << endl;
+      for (int i = 0; i < e; i++) {
+        if (cur_node >= nodes.size())
+          break;
+        int v = nodes[cur_node++];
+        g.add_edge(u, v);
+        semi_log << "added edge: " << u << " -> " << v << endl;
+      }
+      m -= e;
+      n -= e;
+      leaves = g.leaves();
+    }
+
+    semi_log << "Добавление случайных ребер..." << endl;
+    int r = find_root(g);
+    for (int i = 0; i < random_edges; i++) {
+      int u, v, ii = 0;
+      do {
+        u = rand() % nodes.size();
+        v = rand() % nodes.size();
+        ii++;
+      } while ((g.shortest_path_length(r, u) > g.shortest_path_length(r, v) ||
+                g.is_edge(u, v) || u == v || inf_for_digraph(g, u, v) != u) &&
+               ii <= 100);
+      if (ii > 100) {
+        semi_log << "Исчерпаны попытки добавления случайного ребра." << endl;
+        throw 1;
+      }
+      g.add_edge(u, v);
+      semi_log << "added edge: " << u << " -> " << v << endl;
+    }
+
+    semi_log << "Итоговый случайный граф:" << endl;
+    semi_log << g.to_string() << endl;
+
+    Semilattice<int> s = to_semi(g);
+
+    if (!s.is_valid()) {
+      semi_log << "Не выполняются свойства полурешетки." << endl;
+      throw 1;
+    }
+
+    g = to_digraph(s);
+
+    if (g.number_of_edges() != M) {
+      semi_log << "В полученом графе неверное число ребер." << endl;
+      throw 1;
+    }
+
+    if (print_type == 1) {
+      os << g.to_string() << endl;
+      return 0;
+    }
+
+    os << s.to_string() << endl;
+
+    if (print_type == 2) {
+      os << g.to_string() << endl;
+    }
+  } catch (...) {
+    count_iters--;
+    if (count_iters < 0) {
+      os << "Неудачное построение." << endl;
+      return 1;
+    } else {
+      goto loop;
+    }
+  }
 }
 
 int main(int argc, char **argv) {
@@ -227,11 +427,15 @@ int main(int argc, char **argv) {
 
   try {
 
-#define CMD(f) { #f, { f<int>, f<string> } }
+#define CMD(f)                                                                 \
+  {                                                                            \
+    #f, { f<int>, f<string> }                                                  \
+  }
 
     map<string, vector<function<int()>>> cmds = {
-      CMD(iso), CMD(tos), CMD(tog), CMD(todot), CMD(inv3), CMD(ginv3),
-      CMD(istree), CMD(gistree),
+        CMD(iso),   CMD(tos),   CMD(tog),    CMD(todot),
+        CMD(inv3),  CMD(ginv3), CMD(istree), CMD(gistree),
+        CMD(ccode), CMD(gen1),  CMD(gen2),
     };
 
 #undef CMD
@@ -247,7 +451,8 @@ int main(int argc, char **argv) {
     }
 
     int j = 0;
-    if (int_mode == false) j = 1;
+    if (int_mode == false)
+      j = 1;
     return cmds[cmd][j]();
 
   } catch (exception &e) {

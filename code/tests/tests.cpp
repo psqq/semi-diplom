@@ -262,5 +262,11 @@ public:
  void runTest() { suite_MyTestSuite.test_TreeEncoder(); }
 } testDescription_suite_MyTestSuite_test_TreeEncoder;
 
+static class TestDescription_suite_MyTestSuite_test_hard_test_2 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_MyTestSuite_test_hard_test_2() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 714, "test_hard_test_2" ) {}
+ void runTest() { suite_MyTestSuite.test_hard_test_2(); }
+} testDescription_suite_MyTestSuite_test_hard_test_2;
+
 #include <cxxtest/Root.cpp>
 const char* CxxTest::RealWorldDescription::_worldName = "cxxtest";

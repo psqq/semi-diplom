@@ -1,5 +1,5 @@
-#include "treeiso.h"
 #include "semiiso.h"
+#include "treeiso.h"
 #include <algorithm>
 #include <queue>
 #include <vector>
@@ -8,8 +8,12 @@ using namespace std;
 template <class T> TreeEncoder<T>::TreeEncoder(Digraph<T> &ag) : g(ag) {}
 
 template <class T> void TreeEncoder<T>::go() {
-  r.second = find_root(g);
   _good = true;
+  if (g.number_of_nodes() == 0) {
+    computed = true;
+    return;
+  }
+  r.second = find_root(g);
   if (g.number_of_nodes() == 0)
     return;
   go(r.second);
@@ -54,6 +58,12 @@ TreeIso<T>::TreeIso(Digraph<T> &ag1, Digraph<T> &ag2)
     : g1(ag1), g2(ag2), e1(ag1), e2(ag2) {}
 
 template <class T> bool TreeIso<T>::is_iso() {
+  if (g1.number_of_nodes() == g2.number_of_nodes() &&
+      g1.number_of_nodes() == 0) {
+    _is_iso = 1;
+    f_computed = 1;
+    return 1;
+  }
   if (_is_iso >= 0)
     return _is_iso;
   if (!e1.good() || !e2.good()) {

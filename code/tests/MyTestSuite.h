@@ -710,4 +710,31 @@ public:
   //   for (auto p : ans) {
   //   }
   // }
+
+  void test_hard_test_2() {
+    Semilattice<int> s1, s2;
+    s1 = Semilattice<int>::from_string(R"(
+      0 0 0 0 0 0 0 0 0
+      0 1 1 0 1 1 0 1 1
+      0 1 2 0 1 2 0 1 2
+      0 0 0 3 3 3 3 3 3
+      0 1 1 3 4 4 3 4 4
+      0 1 2 3 4 5 3 4 5
+      0 0 0 3 3 3 6 6 6
+      0 1 1 3 4 4 6 7 7
+      0 1 2 3 4 5 6 7 8
+    )");
+    s2 = Semilattice<int>::from_string(R"(
+      0 0 0 0 0 0 0 0 0
+      0 1 1 0 1 1 0 1 1
+      0 1 2 0 1 2 0 1 2
+      0 0 0 3 3 3 3 3 3
+      0 1 1 3 4 4 3 4 4
+      0 1 2 3 4 5 3 4 5
+      0 0 0 3 3 3 6 6 6
+      0 1 1 3 4 4 6 7 7
+      0 1 2 3 4 5 6 7 8
+    )");
+    TS_ASSERT(is_isomorphic(s1, s2));
+  }
 };

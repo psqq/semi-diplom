@@ -51,11 +51,11 @@ template <class T> Digraph<T> to_digraph(Semilattice<T> s) {
 
 template <class T> T find_root(Digraph<T> g) {
   if (g.number_of_nodes() == 0) {
-    throw GeneralException("find_root: root don't found!");
+    throw GeneralException("find_root: root don't found! (g.number_of_nodes() == 0)");
   }
   T root = *begin(g.nodes());
   for (int i = 0; i < g.number_of_nodes(); i++) {
-    auto p = g.predecessors(root);
+    const auto &p = g.predecessors(root);
     if (p.size() == 0)
       return root;
     root = *begin(p);
@@ -299,7 +299,7 @@ template <class T> bool is_isomorphic(Semilattice<T> s1, Semilattice<T> s2) {
 
   auto tree_is_isomorphic_with_log = [&](Digraph<T> &g1, string g1_name,
                                          Digraph<T> &g2, string g2_name) {
-    cout << "Проверка графов " << g1_name << " и " << g2_name
+    semi_log << "Проверка графов " << g1_name << " и " << g2_name
          << " на изоморфизм с помощью алгоритма проверки деревьев на изоморфизм"
          << endl;
     string s1 = encode_tree(g1);
